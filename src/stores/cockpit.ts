@@ -60,9 +60,14 @@ export const useCockpit = create<CockpitState>((set, get) => ({
   volume: 35,
   suspension: "Balanced",
   hud: true,
+  // Only engaging an input takes over from demo cruise; releases (key up, blur) do not.
   setInput: (input) =>
     set((state) => ({
-      controls: { ...state.controls, ...input, cruise: false },
+      controls: {
+        ...state.controls,
+        ...input,
+        cruise: state.controls.cruise && !Object.values(input).some(Boolean),
+      },
     })),
   gear: (gear) => {
     if (get().world.speed > 0.5) return;

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowUp,
   BatteryMedium,
@@ -190,7 +191,16 @@ function VehiclePanel() {
 }
 
 function Help({ close }: { close: () => void }) {
-  return (
+  const opener = useRef<Element | null>(document.activeElement);
+  useEffect(() => {
+    const trigger = opener.current;
+    useCockpit.getState().setInput({ throttle: 0, brake: 0, steering: 0 });
+    return () => {
+      if (trigger instanceof HTMLElement && trigger.isConnected)
+        trigger.focus({ preventScroll: true });
+    };
+  }, []);
+  return createPortal(
     <div className="modal-backdrop" onClick={close}>
       <section
         className="help-dialog"
@@ -247,7 +257,8 @@ function Help({ close }: { close: () => void }) {
           Understood <Check size={16} />
         </button>
       </section>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -275,18 +286,18 @@ export default function App() {
   useEffect(() => startSimulation(), []);
   useEffect(() => {
     const escape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setHelp(false);
-        setExpanded(false);
-      }
+      if (event.key !== "Escape") return;
+      if (help) setHelp(false);
+      else setExpanded(false);
     };
     window.addEventListener("keydown", escape);
     return () => window.removeEventListener("keydown", escape);
-  }, []);
+  }, [help]);
   const cameras: CameraMode[] = ["Follow", "Overhead", "Driver", "Orbit"];
   return (
     <div
       className={`app-shell ${night ? "night" : ""} ${expanded ? "immersive" : ""}`}
+      inert={help}
     >
       <header className="app-header">
         <a

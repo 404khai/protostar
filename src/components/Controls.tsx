@@ -42,6 +42,7 @@ export function useDrivingKeys() {
       });
     const keydown = (event: KeyboardEvent) => {
       if (event.defaultPrevented) return;
+      if (document.querySelector('[aria-modal="true"]')) return;
       if (
         (event.target as HTMLElement).closest(
           'input, select, textarea, [role="slider"]',

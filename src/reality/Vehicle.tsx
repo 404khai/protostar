@@ -1,5 +1,7 @@
-import { useMemo } from "react";
-import { ExtrudeGeometry, Shape } from "three";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { ExtrudeGeometry, Group, Shape } from "three";
+import { useCockpit } from "../stores/cockpit";
 
 interface VehicleProps {
   color?: string;
@@ -7,6 +9,57 @@ interface VehicleProps {
   van?: boolean;
   braking?: boolean;
   perception?: boolean;
+  trafficId?: number;
+}
+
+function Wheel({
+  x,
+  z,
+  ego,
+  trafficId,
+}: {
+  x: number;
+  z: number;
+  ego: boolean;
+  trafficId?: number;
+}) {
+  const steering = useRef<Group>(null);
+  const rolling = useRef<Group>(null);
+  useFrame((_, dt) => {
+    const { world, controls } = useCockpit.getState();
+    if (controls.paused) return;
+    const angle = ego && z < 0 ? -controls.steering * 0.4 : 0;
+    if (steering.current)
+      steering.current.rotation.y +=
+        (angle - steering.current.rotation.y) * (1 - Math.exp(-dt * 12));
+    const speed = ego
+      ? world.speed * (controls.gear === "R" ? -1 : 1)
+      : world.traffic.find((vehicle) => vehicle.id === trafficId)?.speed ?? 0;
+    if (rolling.current)
+      rolling.current.rotation.x =
+        (rolling.current.rotation.x - (speed * Math.min(dt, 0.05)) / 0.47) %
+        (Math.PI * 2);
+  });
+  return (
+    <group ref={steering} position={[x, 0.48, z]}>
+      <group ref={rolling}>
+        <group rotation={[0, 0, Math.PI / 2]}>
+          <mesh castShadow>
+            <cylinderGeometry args={[0.47, 0.47, 0.24, 20]} />
+            <meshStandardMaterial color="#272b2c" roughness={0.85} />
+          </mesh>
+          <mesh>
+            <cylinderGeometry args={[0.32, 0.32, 0.253, 12]} />
+            <meshStandardMaterial color="#a1aaa9" metalness={0.85} roughness={0.22} />
+          </mesh>
+          <mesh>
+            <cylinderGeometry args={[0.19, 0.19, 0.26, 6]} />
+            <meshStandardMaterial color="#41494b" metalness={0.8} roughness={0.2} />
+          </mesh>
+        </group>
+      </group>
+    </group>
+  );
 }
 
 /** Locally authored coachwork: extruded body, panoramic glass, machined wheels and light bars. */
@@ -16,6 +69,7 @@ export function Vehicle({
   van = false,
   braking = false,
   perception = false,
+  trafficId,
 }: VehicleProps) {
   const body = useMemo(() => {
     const shape = new Shape();
@@ -113,32 +167,13 @@ export function Vehicle({
       ))}
       {[-1.03, 1.03].flatMap((x) =>
         [-1.4, 1.43].map((z) => (
-          <group
+          <Wheel
             key={`${x}-${z}`}
-            position={[x, 0.48, z]}
-            rotation={[0, 0, Math.PI / 2]}
-          >
-            <mesh castShadow>
-              <cylinderGeometry args={[0.47, 0.47, 0.24, 20]} />
-              <meshStandardMaterial color="#272b2c" roughness={0.85} />
-            </mesh>
-            <mesh>
-              <cylinderGeometry args={[0.32, 0.32, 0.253, 12]} />
-              <meshStandardMaterial
-                color="#a1aaa9"
-                metalness={0.85}
-                roughness={0.22}
-              />
-            </mesh>
-            <mesh>
-              <cylinderGeometry args={[0.19, 0.19, 0.26, 6]} />
-              <meshStandardMaterial
-                color="#41494b"
-                metalness={0.8}
-                roughness={0.2}
-              />
-            </mesh>
-          </group>
+            x={x}
+            z={z}
+            ego={ego}
+            trafficId={trafficId}
+          />
         )),
       )}
       <mesh position={[0, 0.79, -2.19]}>

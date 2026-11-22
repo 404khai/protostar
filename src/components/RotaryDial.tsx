@@ -35,8 +35,8 @@ export function RotaryDial({
         <button
           className="dial-step"
           aria-label={`Decrease ${label.toLowerCase()}`}
-          disabled={value <= min}
-          onClick={() => setValue(value - step)}
+          aria-disabled={value <= min}
+          onClick={() => { if (value > min) setValue(value - step); }}
         >
           <Minus size={14} />
         </button>
@@ -85,8 +85,8 @@ export function RotaryDial({
         <button
           className="dial-step"
           aria-label={`Increase ${label.toLowerCase()}`}
-          disabled={value >= max}
-          onClick={() => setValue(value + step)}
+          aria-disabled={value >= max}
+          onClick={() => { if (value < max) setValue(value + step); }}
         >
           <Plus size={14} />
         </button>

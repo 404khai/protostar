@@ -1,13 +1,11 @@
 import { useEffect, useRef } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
   ArrowUp,
   Gauge,
-  Minus,
-  Plus,
   RotateCcw,
   SlidersHorizontal,
   Snowflake,
@@ -15,6 +13,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { useCockpit } from "../stores/cockpit";
+import { RotaryDial } from "./RotaryDial";
 
 export function useDrivingKeys(enabled = true) {
   useEffect(() => {
@@ -196,82 +195,6 @@ export function DrivingControls() {
   );
 }
 
-function Dial({
-  label,
-  value,
-  min,
-  max,
-  step = 1,
-  onChange,
-  icon,
-  display,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step?: number;
-  onChange: (value: number) => void;
-  icon: ReactNode;
-  display: ReactNode;
-}) {
-  return (
-    <div className="dial-control">
-      <div className="dial-label">
-        {icon}
-        <span>{label}</span>
-      </div>
-      <div className="dial-row">
-        <button
-          className="dial-step"
-          aria-label={`Decrease ${label.toLowerCase()}`}
-          disabled={value <= min}
-          onClick={() => onChange(value - step)}
-        >
-          <Minus size={14} />
-        </button>
-        <div className="knob-wrap">
-          <div
-            className="knob"
-            style={
-              {
-                "--rotation": `${-135 + ((value - min) / (max - min)) * 270}deg`,
-              } as React.CSSProperties
-            }
-          >
-            <i />
-            <span>{display}</span>
-          </div>
-          <input
-            aria-label={label}
-            aria-valuetext={
-              label === "Temperature"
-                ? `${value} degrees Celsius`
-                : value === 0
-                  ? "Off"
-                  : `${value} percent`
-            }
-            type="range"
-            min={min}
-            max={max}
-            step={step}
-            value={value}
-            onChange={(event) => onChange(Number(event.target.value))}
-          />
-        </div>
-        <button
-          className="dial-step"
-          aria-label={`Increase ${label.toLowerCase()}`}
-          disabled={value >= max}
-          onClick={() => onChange(value + step)}
-        >
-          <Plus size={14} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export function HardwareDeck() {
   const temperature = useCockpit((state) => state.temperature);
   const volume = useCockpit((state) => state.volume);
@@ -288,7 +211,7 @@ export function HardwareDeck() {
         <span className="deck-screw" />
       </div>
       <div className="hardware-content">
-        <Dial
+        <RotaryDial
           label="Volume"
           value={volume}
           min={0}
@@ -296,8 +219,9 @@ export function HardwareDeck() {
           onChange={state.setVolume}
           icon={volume ? <Volume1 size={16} /> : <VolumeX size={16} />}
           display={volume === 0 ? "Off" : volume}
+          valueText={volume === 0 ? "Off" : `${volume} percent`}
         />
-        <Dial
+        <RotaryDial
           label="Temperature"
           value={temperature}
           min={16}
@@ -305,6 +229,7 @@ export function HardwareDeck() {
           step={0.5}
           onChange={state.setTemperature}
           icon={<Snowflake size={16} />}
+          valueText={`${temperature} degrees Celsius`}
           display={
             <>
               {temperature}
@@ -321,11 +246,13 @@ export function HardwareDeck() {
             <button
               className="mode-knob"
               aria-label="Cycle driving mode"
+              title={`Drive mode: ${mode}. Press to cycle.`}
+              style={{ "--rotation": `${(modes.indexOf(mode) - 1) * 65}deg` } as CSSProperties}
               onClick={() =>
                 state.mode(modes[(modes.indexOf(mode) + 1) % modes.length])
               }
             >
-              <i />
+              <i aria-hidden="true" />
             </button>
             <div className="mode-options">
               {modes.map((item) => (
@@ -340,13 +267,20 @@ export function HardwareDeck() {
               ))}
             </div>
           </div>
+          <span className="hardware-footnote">Press to turn · {mode.toLowerCase()}</span>
         </div>
         <div className="suspension-control">
           <div className="dial-label">
             <SlidersHorizontal size={16} />
             <span>Suspension</span>
           </div>
-          <div className="mechanical-switch">
+          <div
+            className="mechanical-switch"
+            role="group"
+            aria-label="Suspension preference"
+            style={{ "--position": suspensions.indexOf(suspension) } as CSSProperties}
+          >
+            <span className="switch-actuator" aria-hidden="true" />
             {suspensions.map((item) => (
               <button
                 key={item}

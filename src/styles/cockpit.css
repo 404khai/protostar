@@ -2111,6 +2111,43 @@ small {
     font-size: 6px;
   }
 }
+/* Short laptop screens: fit the whole cluster, including the trip row, without clipping. */
+@media (min-width: 681px) and (max-height: 1050px) {
+  .instrument-cluster {
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .gear-row {
+    margin-top: clamp(14px, 2.2vh, 28px);
+  }
+  .speed-area {
+    padding-top: clamp(10px, 1.8vh, 22px);
+  }
+  .speed-number {
+    font-size: clamp(80px, 10.5vh, 104px);
+  }
+  .speed-limit {
+    margin-top: clamp(8px, 1.4vh, 22px);
+  }
+  .energy-status {
+    padding-top: 14px;
+  }
+  .range-grid {
+    margin-top: clamp(14px, 2vh, 27px);
+  }
+  .cluster-bottom {
+    margin-top: clamp(12px, 2vh, 26px);
+    padding-top: clamp(10px, 1.6vh, 20px);
+  }
+  .cluster-note {
+    display: none;
+  }
+}
+@media (min-width: 681px) and (max-width: 900px) and (max-height: 1050px) {
+  .speed-number {
+    font-size: clamp(76px, 9.5vh, 91px);
+  }
+}
 @media (max-width: 680px) {
   .app-shell {
     height: auto;
@@ -2592,5 +2629,64 @@ small {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 420px) {
+  .vehicle-side {
+    top: 80px;
+    width: 104px;
+  }
+}
+@media (max-width: 400px) {
+  .drive-bar {
+    padding: 0 11px;
+    gap: 6px;
+  }
+  .pedal {
+    min-width: 50px;
+  }
+  .accelerator {
+    min-width: 64px;
+  }
+  .drive-actions {
+    gap: 5px;
+  }
+  .drive-actions .primary-button {
+    padding: 0 7px;
+  }
+}
+@media (max-width: 340px) {
+  .instrument-cluster {
+    grid-template-columns: 84px 1fr 98px;
+    gap: 0 8px;
+    padding: 16px 12px 17px;
+  }
+  .speed-number {
+    font-size: 56px;
+    letter-spacing: -3px;
+  }
+  .range-grid {
+    gap: 6px;
+  }
+  .range-grid > div + div {
+    padding-left: 6px;
+  }
+  .camera-switch {
+    left: 11px;
+  }
+  .camera-switch button {
+    padding: 8px 5px;
+  }
+  .environment-switch {
+    right: 11px;
+  }
+  .vehicle-side {
+    width: 96px;
+  }
+  .drive-actions .primary-button {
+    width: 72px;
+    white-space: normal;
+    line-height: 1.25;
+    text-align: left;
   }
 }

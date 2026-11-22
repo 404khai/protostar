@@ -1,6 +1,6 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { ExtrudeGeometry, Group, Shape } from "three";
+import { ExtrudeGeometry, InstancedMesh, Object3D, Shape } from "three";
 import { useCockpit } from "../stores/cockpit";
 
 interface VehicleProps {
@@ -12,52 +12,60 @@ interface VehicleProps {
   trafficId?: number;
 }
 
-function Wheel({
-  x,
-  z,
-  ego,
-  trafficId,
-}: {
-  x: number;
-  z: number;
-  ego: boolean;
-  trafficId?: number;
-}) {
-  const steering = useRef<Group>(null);
-  const rolling = useRef<Group>(null);
-  useFrame((_, dt) => {
+const wheelPositions = [-1.03, 1.03].flatMap((x) =>
+  [-1.4, 1.43].map((z) => [x, 0.48, z] as const),
+);
+
+function Wheels({ ego, trafficId }: { ego: boolean; trafficId?: number }) {
+  const tires = useRef<InstancedMesh>(null);
+  const rims = useRef<InstancedMesh>(null);
+  const hubs = useRef<InstancedMesh>(null);
+  const transforms = useMemo(() => wheelPositions.map(([x, y, z]) => {
+    const steering = new Object3D();
+    const rolling = new Object3D();
+    const axle = new Object3D();
+    steering.position.set(x, y, z);
+    axle.rotation.z = Math.PI / 2;
+    steering.add(rolling);
+    rolling.add(axle);
+    return { steering, rolling, axle, z };
+  }), []);
+  const update = useCallback((dt: number) => {
     const { world, controls } = useCockpit.getState();
-    if (controls.paused) return;
-    const angle = ego && z < 0 ? -controls.steering * 0.4 : 0;
-    if (steering.current)
-      steering.current.rotation.y +=
-        (angle - steering.current.rotation.y) * (1 - Math.exp(-dt * 12));
     const speed = ego
       ? world.speed * (controls.gear === "R" ? -1 : 1)
       : world.traffic.find((vehicle) => vehicle.id === trafficId)?.speed ?? 0;
-    if (rolling.current)
-      rolling.current.rotation.x =
-        (rolling.current.rotation.x - (speed * Math.min(dt, 0.05)) / 0.47) %
-        (Math.PI * 2);
+    transforms.forEach(({ steering, rolling, axle, z }, i) => {
+      const angle = ego && z < 0 ? -controls.steering * 0.4 : 0;
+      steering.rotation.y += (angle - steering.rotation.y) * (1 - Math.exp(-dt * 12));
+      rolling.rotation.x = (rolling.rotation.x - (speed * Math.min(dt, 0.05)) / 0.47) % (Math.PI * 2);
+      steering.updateMatrixWorld(true);
+      tires.current?.setMatrixAt(i, axle.matrixWorld);
+      rims.current?.setMatrixAt(i, axle.matrixWorld);
+      hubs.current?.setMatrixAt(i, axle.matrixWorld);
+    });
+    for (const mesh of [tires.current, rims.current, hubs.current]) {
+      if (mesh) mesh.instanceMatrix.needsUpdate = true;
+    }
+  }, [ego, trafficId, transforms]);
+  useLayoutEffect(() => { update(0); }, [update]);
+  useFrame((_, dt) => {
+    if (!useCockpit.getState().controls.paused) update(dt);
   });
   return (
-    <group ref={steering} position={[x, 0.48, z]}>
-      <group ref={rolling}>
-        <group rotation={[0, 0, Math.PI / 2]}>
-          <mesh castShadow>
-            <cylinderGeometry args={[0.47, 0.47, 0.24, 20]} />
-            <meshStandardMaterial color="#272b2c" roughness={0.85} />
-          </mesh>
-          <mesh>
-            <cylinderGeometry args={[0.32, 0.32, 0.253, 12]} />
-            <meshStandardMaterial color="#a1aaa9" metalness={0.85} roughness={0.22} />
-          </mesh>
-          <mesh>
-            <cylinderGeometry args={[0.19, 0.19, 0.26, 6]} />
-            <meshStandardMaterial color="#41494b" metalness={0.8} roughness={0.2} />
-          </mesh>
-        </group>
-      </group>
+    <group>
+      <instancedMesh ref={tires} args={[undefined, undefined, 4]} castShadow frustumCulled={false}>
+        <cylinderGeometry args={[0.47, 0.47, 0.24, 20]} />
+        <meshStandardMaterial color="#272b2c" roughness={0.85} />
+      </instancedMesh>
+      <instancedMesh ref={rims} args={[undefined, undefined, 4]} frustumCulled={false}>
+        <cylinderGeometry args={[0.32, 0.32, 0.253, 12]} />
+        <meshStandardMaterial color="#a1aaa9" metalness={0.85} roughness={0.22} />
+      </instancedMesh>
+      <instancedMesh ref={hubs} args={[undefined, undefined, 4]} frustumCulled={false}>
+        <cylinderGeometry args={[0.19, 0.19, 0.26, 6]} />
+        <meshStandardMaterial color="#41494b" metalness={0.8} roughness={0.2} />
+      </instancedMesh>
     </group>
   );
 }
@@ -165,17 +173,7 @@ export function Vehicle({
           <meshStandardMaterial color={color} metalness={0.7} roughness={0.3} />
         </mesh>
       ))}
-      {[-1.03, 1.03].flatMap((x) =>
-        [-1.4, 1.43].map((z) => (
-          <Wheel
-            key={`${x}-${z}`}
-            x={x}
-            z={z}
-            ego={ego}
-            trafficId={trafficId}
-          />
-        )),
-      )}
+      <Wheels ego={ego} trafficId={trafficId} />
       <mesh position={[0, 0.79, -2.19]}>
         <boxGeometry args={[1.67, 0.065, 0.055]} />
         <meshStandardMaterial

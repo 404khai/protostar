@@ -1,11 +1,14 @@
-import { Component, Suspense, useLayoutEffect, useMemo, useRef } from "react";
+import { Component, memo, Suspense, useLayoutEffect, useMemo, useRef } from "react";
 import type { ComponentRef, ReactNode } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { Color, Group, Vector3 } from "three";
+import { OrbitControls, PerformanceMonitor } from "@react-three/drei";
+import { Group, Vector3 } from "three";
 import { useCockpit } from "../stores/cockpit";
 import { relativeDistance } from "../simulation/engine";
 import { Vehicle } from "./Vehicle";
+import { Instanced } from "./Instanced";
+import { cityInstances, laneInstances, rainInstances } from "./instances";
+import { createQualityController } from "./quality";
 
 const palette = { day: "#e9ede8", night: "#182329" };
 const lookAt = new Vector3();
@@ -45,12 +48,12 @@ function InspectionCamera() {
 function CameraRig() {
   const mode = useCockpit((state) => state.camera);
   const previousMode = useRef(mode);
-  const target = useRef(new Vector3(0, 0.5, -13));
+  const target = useMemo(() => new Vector3(0, 0.5, -13), []);
   useFrame(({ camera }, dt) => {
     if (mode === "Orbit") return;
     if (previousMode.current !== mode) {
-      camera.getWorldDirection(target.current);
-      target.current.multiplyScalar(35).add(camera.position);
+      camera.getWorldDirection(target);
+      target.multiplyScalar(35).add(camera.position);
     }
     const state = useCockpit.getState();
     const x = state.world.x;
@@ -67,8 +70,8 @@ function CameraRig() {
       lookAt.set(x - 1, 0.5, -13);
     }
     camera.position.lerp(cameraPosition, 1 - Math.exp(-dt * 4));
-    target.current.lerp(lookAt, 1 - Math.exp(-dt * 5));
-    camera.lookAt(target.current);
+    target.lerp(lookAt, 1 - Math.exp(-dt * 5));
+    camera.lookAt(target);
     previousMode.current = mode;
   });
   // Track Orbit too, so leaving it blends from the actual inspection angle.
@@ -116,14 +119,10 @@ function Road() {
         </group>
       ))}
       <group ref={lines}>
-        {[-1.85, 1.85].flatMap((x) =>
-          Array.from({ length: 37 }, (_, i) => (
-            <mesh key={`${x}-${i}`} position={[x, 0.012, 75 - i * 10]}>
-              <boxGeometry args={[0.12, 0.025, 4]} />
-              <meshBasicMaterial color={night ? "#c0c9c4" : "#f3f6ef"} />
-            </mesh>
-          )),
-        )}
+        <Instanced instances={laneInstances}>
+          <boxGeometry args={[0.12, 0.025, 4]} />
+          <meshBasicMaterial color={night ? "#c0c9c4" : "#f3f6ef"} />
+        </Instanced>
       </group>
       <group ref={path}>
         <mesh position={[0, 0.03, -24]}>
@@ -230,88 +229,36 @@ function Pedestrian() {
 }
 
 function City() {
-  const blocks = useRef<Group>(null);
   const night = useCockpit((state) => state.night);
-  const buildings = useMemo(
-    () =>
-      Array.from({ length: 36 }, (_, i) => ({
-        x: (i % 2 ? 1 : -1) * (19 + ((i * 7) % 13)),
-        z: 65 - Math.floor(i / 2) * 21,
-        height: 7 + ((i * 13) % 23),
-        width: 6 + ((i * 3) % 8),
-      })),
-    [],
-  );
-  useFrame(() => {
-    if (!blocks.current) return;
-    for (let i = 0; i < blocks.current.children.length; i++) {
-      const group = blocks.current.children[i];
-      const base = buildings[i].z;
-      group.position.z =
-        ((((base + useCockpit.getState().world.distance + 300) % 378) + 378) %
-          378) -
-        300;
-    }
-  });
+  const city = useMemo(() => cityInstances(night), [night]);
   return (
-    <group ref={blocks}>
-      {buildings.map((building, i) => (
-        <group key={i} position={[building.x, 0, building.z]}>
-          <mesh position={[0, building.height / 2, 0]} castShadow receiveShadow>
-            <boxGeometry args={[building.width, building.height, 11]} />
-            <meshStandardMaterial
-              color={
-                night
-                  ? i % 2
-                    ? "#344248"
-                    : "#29383d"
-                  : i % 3
-                    ? "#d5dbd4"
-                    : "#c7cfc8"
-              }
-              roughness={0.85}
-            />
-          </mesh>
-          {Array.from(
-            { length: Math.floor(building.height / 3) },
-            (_, floor) => (
-              <mesh key={floor} position={[0, 2 + floor * 3, 5.52]}>
-                <boxGeometry args={[building.width * 0.78, 0.9, 0.03]} />
-                <meshStandardMaterial
-                  color={night ? "#c6c2a2" : "#a8b7b2"}
-                  emissive={night ? "#d7cdb2" : "#000000"}
-                  emissiveIntensity={night ? 0.35 : 0}
-                  roughness={0.4}
-                  metalness={0.3}
-                />
-              </mesh>
-            ),
-          )}
-          <mesh position={[0, building.height + 0.15, 0]}>
-            <boxGeometry args={[building.width + 0.3, 0.3, 11.3]} />
-            <meshStandardMaterial color={night ? "#52605f" : "#e9eae0"} />
-          </mesh>
-          <group
-            position={[
-              -Math.sign(building.x) * (Math.abs(building.x) - 10.7),
-              0,
-              2,
-            ]}
-          >
-            <mesh position={[0, 1.4, 0]} castShadow>
-              <cylinderGeometry args={[0.12, 0.16, 2.8, 7]} />
-              <meshStandardMaterial color="#8c9485" />
-            </mesh>
-            <mesh position={[0, 3.7, 0]} castShadow>
-              <sphereGeometry args={[1.45, 9, 7]} />
-              <meshStandardMaterial
-                color={night ? "#344c42" : "#9daa90"}
-                roughness={1}
-              />
-            </mesh>
-          </group>
-        </group>
-      ))}
+    <group>
+      <Instanced instances={city.bodies} city castShadow receiveShadow>
+        <boxGeometry />
+        <meshStandardMaterial color="#ffffff" roughness={0.85} />
+      </Instanced>
+      <Instanced instances={city.windows} city>
+        <boxGeometry />
+        <meshStandardMaterial
+          color={night ? "#c6c2a2" : "#a8b7b2"}
+          emissive={night ? "#d7cdb2" : "#000000"}
+          emissiveIntensity={night ? 0.35 : 0}
+          roughness={0.4}
+          metalness={0.3}
+        />
+      </Instanced>
+      <Instanced instances={city.roofs} city>
+        <boxGeometry />
+        <meshStandardMaterial color={night ? "#52605f" : "#e9eae0"} />
+      </Instanced>
+      <Instanced instances={city.trunks} city castShadow>
+        <cylinderGeometry args={[0.12, 0.16, 2.8, 7]} />
+        <meshStandardMaterial color="#8c9485" />
+      </Instanced>
+      <Instanced instances={city.crowns} city castShadow>
+        <sphereGeometry args={[1.45, 9, 7]} />
+        <meshStandardMaterial color={night ? "#344c42" : "#9daa90"} roughness={1} />
+      </Instanced>
     </group>
   );
 }
@@ -370,20 +317,10 @@ function Rain() {
   });
   return (
     <group ref={ref}>
-      {Array.from({ length: 110 }, (_, i) => (
-        <mesh
-          key={i}
-          position={[
-            ((i * 7.3) % 50) - 25,
-            (i * 2.1) % 24,
-            -((i * 9.3) % 90) + 15,
-          ]}
-          rotation={[0, 0, -0.15]}
-        >
-          <boxGeometry args={[0.016, 0.7, 0.016]} />
-          <meshBasicMaterial color="#b3c9ce" transparent opacity={0.65} />
-        </mesh>
-      ))}
+      <Instanced instances={rainInstances}>
+        <boxGeometry args={[0.016, 0.7, 0.016]} />
+        <meshBasicMaterial color="#b3c9ce" transparent opacity={0.65} />
+      </Instanced>
     </group>
   );
 }
@@ -407,7 +344,7 @@ function Scene() {
       <directionalLight
         position={[-30, 55, 20]}
         intensity={night ? 0.55 : 2.5}
-        color={new Color(night ? "#aac8e1" : "#fffbed")}
+        color={night ? "#aac8e1" : "#fffbed"}
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-35}
@@ -437,6 +374,24 @@ function Scene() {
   );
 }
 
+function AdaptiveQuality() {
+  const setDpr = useThree((state) => state.setDpr);
+  const preferredDpr = Math.min(1.5, Math.max(1, window.devicePixelRatio));
+  const quality = useMemo(
+    () => createQualityController(preferredDpr, setDpr),
+    [preferredDpr, setDpr],
+  );
+  return (
+    <PerformanceMonitor
+      bounds={() => [40, 55]}
+      factor={1}
+      step={1}
+      onDecline={quality.onDecline}
+      onIncline={quality.onIncline}
+    />
+  );
+}
+
 class SceneBoundary extends Component<
   { children: ReactNode },
   { error: boolean }
@@ -460,7 +415,7 @@ class SceneBoundary extends Component<
     );
   }
 }
-export default function RealityView() {
+function RealityView() {
   return (
     <SceneBoundary>
       <Suspense
@@ -480,9 +435,12 @@ export default function RealityView() {
             </div>
           }
         >
+          <AdaptiveQuality />
           <Scene />
         </Canvas>
       </Suspense>
     </SceneBoundary>
   );
 }
+
+export default memo(RealityView);

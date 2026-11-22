@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import {
   ArrowDown,
@@ -14,83 +14,24 @@ import {
 } from "lucide-react";
 import { useCockpit } from "../stores/cockpit";
 import { RotaryDial } from "./RotaryDial";
+import { bindDrivingKeys } from "./drivingKeys";
 
 export function useDrivingKeys(enabled = true) {
+  const [parkedHint, setParkedHint] = useState(false);
   useEffect(() => {
     if (!enabled) return;
-    const pressed = new Set<string>();
-    const drivingKeys = [
-      "w",
-      "a",
-      "s",
-      "d",
-      "arrowup",
-      "arrowleft",
-      "arrowdown",
-      "arrowright",
-      " ",
-    ];
-    const sync = () =>
-      useCockpit.getState().setInput({
-        throttle: pressed.has("w") || pressed.has("arrowup") ? 1 : 0,
-        brake:
-          pressed.has("s") || pressed.has("arrowdown") || pressed.has(" ")
-            ? 1
-            : 0,
-        steering:
-          (pressed.has("d") || pressed.has("arrowright") ? 1 : 0) -
-          (pressed.has("a") || pressed.has("arrowleft") ? 1 : 0),
-      });
-    const keydown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) return;
-      if (
-        (event.target as HTMLElement).closest(
-          'input, select, textarea, [role="slider"]',
-        )
-      )
-        return;
-      if (
-        (event.target as HTMLElement).closest("button") &&
-        [" ", "Enter"].includes(event.key)
-      ) {
-        if (event.key !== " " || useCockpit.getState().world.speed === 0)
-          return;
-      }
-      const key = event.key.toLowerCase();
-      if (drivingKeys.includes(key)) {
-        event.preventDefault();
-        // Closing the guide while holding a key must not restart an old input.
-        if (event.repeat && !pressed.has(key)) return;
-        pressed.add(key);
-        sync();
-      }
-      if (!event.repeat && key === "q") useCockpit.getState().signal("left");
-      if (!event.repeat && key === "e") useCockpit.getState().signal("right");
-    };
-    const keyup = (event: KeyboardEvent) => {
-      if (pressed.delete(event.key.toLowerCase())) sync();
-    };
-    const clear = () => {
-      pressed.clear();
-      const { controls, setInput } = useCockpit.getState();
-      if (controls.throttle || controls.brake || controls.steering)
-        setInput({ throttle: 0, brake: 0, steering: 0 });
-    };
-    const visibility = () => {
-      if (document.hidden) clear();
-    };
-    window.addEventListener("keydown", keydown);
-    window.addEventListener("keyup", keyup);
-    window.addEventListener("blur", clear);
-    document.addEventListener("visibilitychange", visibility);
+    let timer: ReturnType<typeof setTimeout>;
+    const cleanup = bindDrivingKeys(window, () => {
+      setParkedHint(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => setParkedHint(false), 4000);
+    });
     return () => {
-      window.removeEventListener("keydown", keydown);
-      window.removeEventListener("keyup", keyup);
-      window.removeEventListener("blur", clear);
-      document.removeEventListener("visibilitychange", visibility);
-      clear();
+      clearTimeout(timer);
+      cleanup();
     };
   }, [enabled]);
+  return parkedHint;
 }
 
 function HoldButton({
@@ -140,19 +81,23 @@ function HoldButton({
   );
 }
 
-export function DrivingControls() {
+export function DrivingControls({ parkedHint = false }: { parkedHint?: boolean }) {
   const controls = useCockpit((state) => state.controls);
   const reset = useCockpit((state) => state.reset);
   return (
     <div className="driving-controls">
       <div className="control-caption">
         <span className="tiny-dot" />{" "}
-        {controls.gear === "P"
-          ? "Select D to drive manually"
-          : controls.cruise
-            ? "Demo cruise · 50 km/h"
-            : "You’re in control"}
-        <span className="keyboard-hint">W A S D / arrow keys</span>
+        <span role="status">
+          {controls.gear === "P"
+            ? parkedHint
+              ? "Shift to D to drive (press D)"
+              : "Select D to drive · press D"
+            : controls.cruise
+              ? "Demo cruise · 50 km/h"
+              : "You’re in control"}
+        </span>
+        <span className="keyboard-hint">WASD / ↑↓←→</span>
       </div>
       <div className="pedals">
         <HoldButton label="Steer left" input="steering" value={-1}>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BatteryMedium,
   Check,
@@ -28,6 +28,7 @@ import RouteMap from "../components/RouteMap";
 import RouteGuidance from "../components/RouteGuidance";
 import RealityView from "../reality/RealityView";
 import type { CameraMode } from "../simulation/engine";
+import { containDialogFocus } from "../components/dialogFocus";
 
 function BrandMark() {
   return (
@@ -192,7 +193,7 @@ function Help({ close }: { close: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const element = dialog.current!;
-    const previousFocus = document.activeElement;
+    const releaseFocus = containDialogFocus(element, close);
     const wasPaused = useCockpit.getState().controls.paused;
     if (!wasPaused) useCockpit.getState().pause();
     element.showModal();
@@ -200,9 +201,9 @@ function Help({ close }: { close: () => void }) {
       element.close();
       if (!wasPaused && useCockpit.getState().controls.paused)
         useCockpit.getState().pause();
-      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+      releaseFocus();
     };
-  }, []);
+  }, [close]);
   return (
     <dialog
       ref={dialog}
@@ -237,7 +238,7 @@ function Help({ close }: { close: () => void }) {
       <h2 id="help-title">Take the long way.</h2>
       <p id="help-description">
         Simulation is paused while this guide is open. Close it to return to
-        your drive. Start a demo drive, or select D and take the wheel.
+        your drive. Start a demo drive, or press D while parked and take the wheel.
         Everything you see responds to the same vehicle state.
       </p>
       <dl>
@@ -282,6 +283,7 @@ export default function App() {
     "Reality View",
   );
   const [help, setHelp] = useState(false);
+  const closeHelp = useCallback(() => setHelp(false), []);
   const [expanded, setExpanded] = useState(false);
   const camera = useCockpit((state) => state.camera);
   const night = useCockpit((state) => state.night);
@@ -294,7 +296,7 @@ export default function App() {
   );
   const warning = useCockpit((state) => state.world.warning);
   const state = useCockpit.getState();
-  useDrivingKeys(!help);
+  const parkedHint = useDrivingKeys(!help);
   useEffect(() => startSimulation(), []);
   useEffect(() => {
     const escape = (event: KeyboardEvent) => {
@@ -476,7 +478,7 @@ export default function App() {
             )}
           </div>
           <div className="drive-bar">
-            <DrivingControls />
+            <DrivingControls parkedHint={parkedHint} />
             <div className="drive-actions">
               <button
                 className="icon-button pause-button"
@@ -521,7 +523,7 @@ export default function App() {
         <span>EXPERIMENTAL COCKPIT · SIMULATED DRIVING ENVIRONMENT</span>
         <span>BUILT TO FEEL DIFFERENT.</span>
       </div>
-      {help && <Help close={() => setHelp(false)} />}
+      {help && <Help close={closeHelp} />}
     </div>
   );
 }

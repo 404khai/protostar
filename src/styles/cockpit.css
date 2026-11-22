@@ -9,7 +9,7 @@
   --bg: #e6e7e7;
   --surface: #f5f6f6;
   --text: #2c2e2f;
-  --text-muted: #888a8b;
+  --text-muted: #525a5f;
   --border: #dcddde;
   --accent: #56595a;
   --accent-fg: #f2f2f2;
@@ -76,7 +76,7 @@ button svg {
   vertical-align: middle;
 }
 button:hover {
-  color: #55585a;
+  color: #525a5f;
 }
 small {
   font-size: inherit;
@@ -122,14 +122,14 @@ small {
   display: flex;
   align-items: center;
   gap: 16px;
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 1.9px;
-  color: #828485;
+  color: #525a5f;
 }
 .header-description > span {
   font-weight: 700;
   font-size: 11px;
-  color: #696b6c;
+  color: #525a5f;
   letter-spacing: 1px;
 }
 .header-description i {
@@ -156,9 +156,9 @@ small {
   align-items: center;
 }
 .live-status small {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
-  color: #808182;
+  color: #525a5f;
   margin-left: 1px;
 }
 .live-status > i {
@@ -198,7 +198,7 @@ small {
   width: 244px;
   flex-shrink: 0;
   border-right: 1px solid var(--border);
-  padding: 28px 27px 16px;
+  padding: 22px 22px 14px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -212,22 +212,22 @@ small {
   gap: 8px;
 }
 .micro-label {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.4px;
-  color: #8b8c8d;
+  color: #525a5f;
 }
 .cluster-top .micro-label {
-  font-size: 7px;
+  font-size: 11px;
   letter-spacing: 1.1px;
 }
 .cluster-ready {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 7px;
+  font-size: 11px;
   letter-spacing: 1px;
-  color: #6c6f70;
+  color: #525a5f;
 }
 .cluster-ready i,
 .tiny-dot,
@@ -242,14 +242,14 @@ small {
   display: flex;
   gap: 18px;
   justify-content: center;
-  margin-top: 28px;
+  margin-top: 16px;
 }
 .gear-row button {
   width: 28px;
   height: 29px;
   font-family: "Manrope", sans-serif;
   font-size: 12px;
-  color: #abacad;
+  color: #525a5f;
   font-weight: 500;
   border-radius: 5px;
 }
@@ -263,32 +263,32 @@ small {
   color: #3f4243;
 }
 .gear-row button:disabled {
-  opacity: 0.5;
+  opacity: 1;
 }
 .gear-row button.active:disabled {
   opacity: 1;
 }
 .speed-area {
   text-align: center;
-  padding-top: 22px;
+  padding-top: 12px;
 }
 .signal-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 8px;
-  color: #787a7b;
+  color: #525a5f;
 }
 .signal-row > span {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 1px;
 }
 .signal-row button {
-  color: #c9cbcc;
+  color: #525a5f;
   padding: 4px;
 }
 .signal-row button.signal-on {
-  color: #585b5c;
+  color: #525a5f;
   animation: indicator 1s steps(2) infinite;
 }
 @keyframes indicator {
@@ -307,12 +307,12 @@ small {
 }
 .speed-unit {
   font-size: 11px;
-  color: #86898a;
+  color: #525a5f;
   letter-spacing: 1.5px;
   margin-top: 0;
 }
 .speed-limit {
-  margin-top: 22px;
+  margin-top: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -330,24 +330,24 @@ small {
   font-weight: 650;
 }
 .speed-limit small {
-  font-size: 7px;
-  color: #989b9c;
+  font-size: 11px;
+  color: #525a5f;
   letter-spacing: 1px;
-  max-width: 40px;
+  max-width: 62px;
   text-align: left;
   line-height: 1.6;
 }
 .energy-status {
   margin-top: auto;
-  padding-top: 24px;
+  padding-top: 12px;
 }
 .energy-status > span {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 9px;
-  color: #767a7b;
+  font-size: 11px;
+  color: #525a5f;
 }
 .power-track {
   position: relative;
@@ -375,18 +375,18 @@ small {
   display: flex;
   justify-content: space-between;
   margin-top: 7px;
-  color: #9c9fa1;
-  font-size: 6px;
+  color: #525a5f;
+  font-size: 11px;
   letter-spacing: 0.7px;
 }
 .power-labels > span:nth-child(2) {
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0;
 }
 .range-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-top: 27px;
+  margin-top: 16px;
   gap: 20px;
 }
 .range-grid > div + div {
@@ -394,11 +394,11 @@ small {
   padding-left: 20px;
 }
 .range-grid > div > span {
-  font-size: 9px;
+  font-size: 11px;
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #8c8e8f;
+  color: #525a5f;
   white-space: nowrap;
 }
 .range-grid strong {
@@ -415,7 +415,7 @@ small {
   font-family: "DM Sans", sans-serif;
   letter-spacing: 0;
   margin-left: 4px;
-  color: #757778;
+  color: #525a5f;
 }
 .battery-track {
   width: 58px;
@@ -431,8 +431,8 @@ small {
   background: #8b8f91;
 }
 .range-grid p {
-  font-size: 7px;
-  color: #9ea1a3;
+  font-size: 11px;
+  color: #525a5f;
   margin: 8px 0 0;
   letter-spacing: 0.3px;
 }
@@ -440,18 +440,18 @@ small {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 26px;
-  padding-top: 20px;
+  margin-top: 16px;
+  padding-top: 14px;
   border-top: 1px solid #dedfdf;
 }
 .cluster-bottom > div {
   display: flex;
   gap: 9px;
   align-items: center;
-  color: #8b8e90;
+  color: #525a5f;
 }
 .cluster-bottom > div > span {
-  font-size: 7px;
+  font-size: 11px;
 }
 .cluster-bottom strong {
   display: block;
@@ -462,9 +462,9 @@ small {
   color: #454849;
 }
 .cluster-bottom strong small {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 400;
-  color: #909496;
+  color: #525a5f;
 }
 .drive-symbol {
   display: grid;
@@ -473,14 +473,15 @@ small {
   width: 29px;
   height: 29px;
   border-radius: 50%;
-  color: #909496;
+  color: #525a5f;
 }
 .cluster-note {
-  font-size: 6px;
-  letter-spacing: 1.4px;
-  color: #adb0b1;
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  line-height: 1.5;
+  color: #525a5f;
   text-align: center;
-  margin-top: 23px;
+  margin-top: 14px;
 }
 .infotainment {
   flex: 1;
@@ -499,7 +500,7 @@ small {
   background: #f6f7f7;
 }
 .display-title .micro-label {
-  font-size: 6px;
+  font-size: 11px;
   letter-spacing: 1.7px;
 }
 .display-title h1 {
@@ -520,11 +521,11 @@ small {
   border-radius: 6px;
 }
 .display-tabs button {
-  font-size: 9px;
+  font-size: 11px;
   padding: 8px 13px;
   min-width: 75px;
   white-space: nowrap;
-  color: #888b8d;
+  color: #525a5f;
   border-radius: 4px;
 }
 .display-tabs button.active {
@@ -539,7 +540,7 @@ small {
   display: inline-grid;
   place-items: center;
   padding: 0;
-  color: #727576;
+  color: #525a5f;
 }
 .icon-button:hover {
   background: #dedfe0;
@@ -550,7 +551,7 @@ small {
 }
 .help {
   margin-left: 1px;
-  color: #969a9c;
+  color: #525a5f;
 }
 .scene-container {
   flex: 1;
@@ -577,8 +578,11 @@ small {
   align-items: center;
   gap: 7px;
   letter-spacing: 1.2px;
-  font-size: 7px;
-  color: #6e7071;
+  font-size: 11px;
+  color: #525a5f;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: #f4f5f5;
 }
 .live-indicator {
   background: #818688;
@@ -597,10 +601,10 @@ small {
   pointer-events: auto;
 }
 .scene-actions .icon-button {
-  background: #efefefc9;
+  background: #efefef;
   border: 1px solid #d2d4d588;
   backdrop-filter: blur(10px);
-  color: #737778;
+  color: #525a5f;
 }
 .scene-actions .icon-button.active {
   background: #cfd0d1;
@@ -617,7 +621,7 @@ small {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #f4f4f4e8;
+  background: #f4f4f4;
   border: 1px solid #fff9;
   border-radius: 8px;
   min-width: 213px;
@@ -648,30 +652,34 @@ small {
   font-size: 11px;
   font-weight: 400;
   margin-left: 2px;
-  color: #7b7e80;
+  color: #525a5f;
 }
 .route-guidance > div > span {
-  font-size: 10px;
+  font-size: 11px;
   margin-top: 6px;
 }
 .route-guidance > div > small {
-  font-size: 8px;
-  color: #909495;
+  font-size: 11px;
+  color: #525a5f;
   margin-top: 4px;
 }
 .scene-description {
   position: absolute;
   left: 28px;
-  bottom: 28px;
+  bottom: 84px;
   display: flex;
   align-items: center;
   gap: 11px;
   pointer-events: none;
+  max-width: 300px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: #f4f5f5;
 }
 .coordinate-mark {
   font-size: 25px;
   font-weight: 300;
-  color: #898d8e;
+  color: #525a5f;
 }
 .scene-description > div {
   display: flex;
@@ -679,13 +687,14 @@ small {
   gap: 6px;
 }
 .scene-description > div > span {
-  font-size: 10px;
-  color: #646869;
+  font-size: 11px;
+  color: #525a5f;
 }
 .scene-description small {
-  font-size: 7px;
+  font-size: 11px;
   letter-spacing: 0.4px;
-  color: #8f9395;
+  color: #525a5f;
+  line-height: 1.5;
 }
 .camera-switch {
   position: absolute;
@@ -697,21 +706,21 @@ small {
   gap: 3px;
   padding: 4px 5px 4px 11px;
   border: 1px solid #e4e5e5;
-  background: #f4f5f5ee;
+  background: #f4f5f5;
   border-radius: 6px;
   box-shadow: 0 3px 12px #3b3d3e0a;
   backdrop-filter: blur(10px);
   white-space: nowrap;
 }
 .camera-switch > svg {
-  color: #999c9e;
+  color: #525a5f;
   margin-right: 6px;
 }
 .camera-switch button {
   padding: 8px 11px;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.2px;
-  color: #8e9293;
+  color: #525a5f;
   border-radius: 3px;
 }
 .camera-switch button.active {
@@ -725,7 +734,7 @@ small {
   display: flex;
   gap: 6px;
   align-items: center;
-  background: #f4f5f5eb;
+  background: #f4f5f5;
   border: 1px solid #e4e5e5;
   border-radius: 6px;
   padding: 5px;
@@ -733,7 +742,7 @@ small {
 }
 .environment-switch button {
   padding: 6px;
-  color: #828688;
+  color: #525a5f;
   display: flex;
   gap: 5px;
   align-items: center;
@@ -758,8 +767,8 @@ small {
   gap: 8px;
   align-items: center;
   background: #f7e8cd;
-  color: #7b6336;
-  font-size: 10px;
+  color: #525a5f;
+  font-size: 11px;
   padding: 10px 14px;
   border-radius: 5px;
   box-shadow: 0 2px 12px #463f3010;
@@ -768,7 +777,7 @@ small {
 .paused-message {
   top: 50%;
   background: #f3f4f4ef;
-  color: #5f6264;
+  color: #525a5f;
   font-size: 12px;
   padding: 15px 24px;
   backdrop-filter: blur(10px);
@@ -793,18 +802,21 @@ small {
   display: flex;
   gap: 6px;
   align-items: center;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.2px;
-  color: #747879;
+  color: #525a5f;
+  flex-wrap: wrap;
+  row-gap: 4px;
 }
 .control-caption .tiny-dot {
   width: 3px;
   height: 3px;
 }
 .keyboard-hint {
-  margin-left: 16px;
-  color: #a5a8a9;
-  font-size: 7px;
+  margin-left: 6px;
+  color: #525a5f;
+  font-size: 11px;
+  white-space: nowrap;
 }
 .pedals {
   display: flex;
@@ -822,7 +834,7 @@ small {
   border: 1px solid #dadbdb;
   border-bottom: 2px solid #cecfd0;
   border-radius: 4px;
-  color: #898d8f;
+  color: #525a5f;
   touch-action: none;
   user-select: none;
 }
@@ -834,13 +846,13 @@ small {
 }
 .pedal {
   padding: 0 9px;
-  font-size: 8px;
-  color: #6e7274;
+  font-size: 11px;
+  color: #525a5f;
   min-width: 83px;
 }
 .pedal kbd {
-  font-size: 6px;
-  color: #9c9fa1;
+  font-size: 11px;
+  color: #525a5f;
   border: 1px solid #dbdcdc;
   padding: 2px 3px;
   border-radius: 2px;
@@ -861,7 +873,7 @@ small {
   width: 28px;
   height: 29px;
   margin-left: 4px;
-  color: #989c9d;
+  color: #525a5f;
 }
 .drive-actions {
   display: flex;
@@ -871,7 +883,7 @@ small {
 .pause-button {
   width: 30px;
   height: 30px;
-  color: #898d8e;
+  color: #525a5f;
 }
 .primary-button {
   display: flex;
@@ -882,7 +894,7 @@ small {
   color: #f2f3f3;
   border: 1px solid #373939;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   height: 39px;
   padding: 0 18px;
@@ -898,6 +910,11 @@ small {
   background: #e2e3e3;
   color: #4f5253;
   border-color: #cccecf;
+}
+.primary-button:disabled {
+  opacity: 1;
+  color: #4f5253;
+  background: #e2e3e3;
 }
 .hardware-deck {
   flex-shrink: 0;
@@ -930,15 +947,15 @@ small {
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 6px;
+  font-size: 11px;
   letter-spacing: 1.7px;
-  color: #95999b;
+  color: #525a5f;
 }
 .engraved {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #9c9fa1;
+  color: #525a5f;
   text-shadow: 0 1px #fff9;
 }
 .deck-screw {
@@ -967,8 +984,8 @@ small {
   display: flex;
   gap: 7px;
   align-items: center;
-  font-size: 8px;
-  color: #797e80;
+  font-size: 11px;
+  color: #525a5f;
   letter-spacing: 0.5px;
 }
 .dial-label > svg {
@@ -985,7 +1002,7 @@ small {
 .dial-step {
   height: 25px;
   width: 25px;
-  color: #898d8e;
+  color: #525a5f;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -1019,7 +1036,7 @@ small {
     inset 0 0 0 5px #e4e5e5;
   display: grid;
   place-items: center;
-  color: #5e6162;
+  color: #525a5f;
   font-size: 16px;
   font-weight: 450;
   font-variant-numeric: tabular-nums;
@@ -1116,9 +1133,9 @@ small {
 }
 .mode-options button {
   padding: 3px 0;
-  font-size: 8px;
+  font-size: 11px;
   text-align: left;
-  color: #9b9e9f;
+  color: #525a5f;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1151,39 +1168,39 @@ small {
   box-shadow: inset 0 1px 2px #7a7e802b;
 }
 .mechanical-switch button {
-  font-size: 8px;
+  font-size: 11px;
   padding: 8px 13px;
-  color: #8b8f91;
+  color: #525a5f;
   border-radius: 3px;
 }
 .mechanical-switch button.selected {
   background: linear-gradient(#efefef, #dddede);
   box-shadow: 0 1px 2px #6c70723b;
-  color: #585b5c;
+  color: #525a5f;
   border: 1px solid #c3c5c6;
   padding: 7px 12px;
 }
 .hardware-footnote {
   display: block;
-  font-size: 6px;
+  font-size: 11px;
   letter-spacing: 0.3px;
   margin-top: 6px;
-  color: #999c9e;
+  color: #525a5f;
 }
 .deck-statement {
   border-left: 1px solid #c7c9c9;
   min-width: 150px;
   padding-left: 26px;
-  color: #7a7e80;
+  color: #525a5f;
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-self: center;
-  font-size: 10px;
+  font-size: 11px;
 }
 .deck-statement small {
-  font-size: 7px;
-  color: #9ea1a2;
+  font-size: 11px;
+  color: #525a5f;
   letter-spacing: 0.2px;
 }
 .app-bottomline {
@@ -1193,17 +1210,17 @@ small {
   justify-content: space-between;
   align-items: center;
   padding: 0 4px;
-  color: #9fa2a3;
+  color: #525a5f;
   letter-spacing: 1.2px;
-  font-size: 6px;
+  font-size: 11px;
 }
 .app-bottomline b {
   font-weight: 400;
   margin-left: 8px;
-  color: #acaeaf;
+  color: #525a5f;
 }
 .app-bottomline > span:nth-child(2) {
-  font-size: 5px;
+  font-size: 11px;
   letter-spacing: 1.4px;
 }
 .context-panel {
@@ -1254,12 +1271,12 @@ small {
   bottom: 117px;
 }
 .map-heading {
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 1.3px;
   padding: 26px 23px 20px;
   display: flex;
   justify-content: space-between;
-  color: #909495;
+  color: #525a5f;
 }
 .route-map > svg {
   display: block;
@@ -1273,7 +1290,7 @@ small {
   align-items: center;
   gap: 10px;
   margin: 20px 22px;
-  color: #727677;
+  color: #525a5f;
 }
 .map-destination > span {
   font-size: 11px;
@@ -1281,8 +1298,8 @@ small {
 }
 .map-destination small {
   display: block;
-  font-size: 8px;
-  color: #9ea1a2;
+  font-size: 11px;
+  color: #525a5f;
   margin-top: 7px;
 }
 .route-details {
@@ -1293,17 +1310,17 @@ small {
   display: flex;
   gap: 9px;
   align-items: center;
-  font-size: 10px;
-  color: #75797a;
+  font-size: 11px;
+  color: #525a5f;
 }
 .route-details .route-guidance {
   color: #4c5650;
   margin-bottom: 24px;
 }
 .route-details p {
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.9;
-  color: #979b9d;
+  color: #525a5f;
   margin: 11px 0 0;
 }
 .vehicle-panel {
@@ -1317,8 +1334,8 @@ small {
   margin: 9px 0;
 }
 .panel-heading p {
-  font-size: 8px;
-  color: #989c9d;
+  font-size: 11px;
+  color: #525a5f;
 }
 .vehicle-side {
   padding: 28px 0 21px;
@@ -1335,12 +1352,12 @@ small {
   padding: 17px 0;
 }
 .vehicle-specs > span {
-  font-size: 7px;
-  color: #929698;
+  font-size: 11px;
+  color: #525a5f;
 }
 .vehicle-specs strong {
   display: block;
-  color: #626668;
+  color: #525a5f;
   font-size: 11px;
   font-weight: 500;
   margin-top: 6px;
@@ -1358,12 +1375,12 @@ small {
   border-bottom: 1px solid #dfe0e1;
 }
 .setting-row > span {
-  font-size: 10px;
+  font-size: 11px;
 }
 .setting-row small {
   display: block;
-  font-size: 7px;
-  color: #999c9e;
+  font-size: 11px;
+  color: #525a5f;
   margin-top: 6px;
 }
 .toggle {
@@ -1392,9 +1409,9 @@ small {
   transform: translateX(13px);
 }
 .settings-note {
-  font-size: 7px;
+  font-size: 11px;
   line-height: 1.8;
-  color: #a1a4a6;
+  color: #525a5f;
   margin-top: 20px;
 }
 .help-dialog::backdrop {
@@ -1429,7 +1446,7 @@ small {
 .help-dialog p {
   font-size: 12px;
   line-height: 1.8;
-  color: #838789;
+  color: #525a5f;
 }
 .help-dialog dl {
   margin: 25px 0;
@@ -1441,10 +1458,10 @@ small {
   padding: 11px 0;
   align-items: center;
   font-size: 11px;
-  color: #6d7173;
+  color: #525a5f;
 }
 .help-dialog dt {
-  font-size: 9px;
+  font-size: 11px;
 }
 .help-dialog dd {
   margin: 0;
@@ -1457,7 +1474,7 @@ small {
   font-family: inherit;
 }
 .help-dialog .help-note {
-  font-size: 10px;
+  font-size: 11px;
 }
 .help-dialog .primary-button {
   width: 100%;
@@ -1475,7 +1492,7 @@ small {
   text-align: center;
   padding: 50px;
   z-index: 3;
-  color: #636769;
+  color: #525a5f;
 }
 .scene-error p {
   max-width: 330px;
@@ -1501,24 +1518,28 @@ small {
   display: none;
 }
 .immersive .scene-description {
-  bottom: 30px;
+  bottom: 84px;
 }
 .night .scene-description > div > span {
-  color: #a3a6a7;
+  color: #e4eaed;
 }
 .night .scene-description small,
 .night .coordinate-mark {
-  color: #888c8d;
+  color: #e4eaed;
 }
 .night .world-tag {
   color: #b5b8b9;
 }
+.night .scene-description,
+.night .world-tag {
+  background: #182329;
+}
 .night .camera-switch,
 .night .environment-switch {
-  background: #e8e9e9ee;
+  background: #e8e9e9;
 }
 .night .scene-topline .scene-actions .icon-button {
-  background: #e8e9e9d9;
+  background: #e8e9e9;
 }
 @media (min-width: 1600px) {
   .app-shell {
@@ -1529,29 +1550,29 @@ small {
   }
   .instrument-cluster {
     width: 285px;
-    padding: 33px 34px 23px;
+    padding: 26px 28px 18px;
   }
   .cluster-top .micro-label {
-    font-size: 8px;
+    font-size: 11px;
   }
   .cluster-ready {
-    font-size: 8px;
+    font-size: 11px;
   }
   .gear-row {
-    margin-top: 35px;
+    margin-top: 20px;
     gap: 23px;
   }
   .speed-number {
     font-size: 140px;
   }
   .speed-area {
-    padding-top: 28px;
+    padding-top: 16px;
   }
   .signal-row > span {
     font-size: 12px;
   }
   .range-grid {
-    margin-top: 37px;
+    margin-top: 20px;
     gap: 27px;
   }
   .range-grid strong {
@@ -1567,12 +1588,12 @@ small {
     font-size: 11px;
   }
   .cluster-bottom {
-    margin-top: 37px;
-    padding-top: 25px;
+    margin-top: 20px;
+    padding-top: 16px;
   }
   .cluster-note {
-    font-size: 7px;
-    margin-top: 30px;
+    font-size: 11px;
+    margin-top: 14px;
   }
   .display-toolbar {
     height: 101px;
@@ -1582,7 +1603,7 @@ small {
     font-size: 26px;
   }
   .display-title .micro-label {
-    font-size: 7px;
+    font-size: 11px;
   }
   .display-tabs button {
     font-size: 11px;
@@ -1596,14 +1617,14 @@ small {
     padding: 0 33px;
   }
   .control-caption {
-    font-size: 10px;
+    font-size: 11px;
   }
   .keyboard-hint {
-    font-size: 8px;
+    font-size: 11px;
   }
   .pedal {
     height: 32px;
-    font-size: 10px;
+    font-size: 11px;
     padding: 0 12px;
   }
   .hold-button {
@@ -1619,7 +1640,7 @@ small {
     padding: 0 23px;
   }
   .world-tag {
-    font-size: 8px;
+    font-size: 11px;
   }
   .navigation-cue {
     left: 34px;
@@ -1630,25 +1651,25 @@ small {
   .navigation-cue strong {
     font-size: 24px;
   }
-  .navigation-cue > div > span {
+  .route-guidance > div > span {
     font-size: 11px;
   }
-  .navigation-cue > div > small {
-    font-size: 9px;
+  .route-guidance > div > small {
+    font-size: 11px;
   }
   .camera-switch button {
-    font-size: 10px;
+    font-size: 11px;
     padding: 10px 15px;
   }
   .scene-description > div > span {
     font-size: 12px;
   }
   .scene-description small {
-    font-size: 8px;
+    font-size: 11px;
   }
   .scene-description {
     left: 35px;
-    bottom: 32px;
+    bottom: 84px;
   }
   .camera-switch,
   .environment-switch {
@@ -1659,13 +1680,13 @@ small {
     padding: 18px 38px 17px;
   }
   .hardware-caption {
-    font-size: 7px;
+    font-size: 11px;
   }
   .hardware-content {
     margin-top: 14px;
   }
   .dial-label {
-    font-size: 10px;
+    font-size: 11px;
   }
   .dial-label > svg {
     width: 15px;
@@ -1697,34 +1718,34 @@ small {
     transform-origin: center 20px;
   }
   .mode-options button {
-    font-size: 10px;
+    font-size: 11px;
   }
   .mode-row {
     gap: 24px;
   }
   .mechanical-switch button {
-    font-size: 10px;
+    font-size: 11px;
     padding: 9px 18px;
   }
   .mechanical-switch button.selected {
     padding: 8px 17px;
   }
   .hardware-footnote {
-    font-size: 7px;
+    font-size: 11px;
   }
   .deck-statement {
     font-size: 12px;
     min-width: 200px;
   }
   .deck-statement small {
-    font-size: 8px;
+    font-size: 11px;
   }
   .app-bottomline {
     height: 38px;
-    font-size: 7px;
+    font-size: 11px;
   }
   .app-bottomline > span:nth-child(2) {
-    font-size: 6px;
+    font-size: 11px;
   }
 }
 @media (max-width: 1180px) {
@@ -1741,7 +1762,7 @@ small {
     letter-spacing: 3px;
   }
   .header-description {
-    font-size: 7px;
+    font-size: 11px;
     letter-spacing: 1px;
     gap: 9px;
   }
@@ -1750,7 +1771,7 @@ small {
   }
   .live-status {
     gap: 17px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .live-status small {
     display: none;
@@ -1760,7 +1781,7 @@ small {
     padding: 25px 21px 15px;
   }
   .cluster-top .micro-label {
-    font-size: 6px;
+    font-size: 11px;
   }
   .gear-row {
     gap: 13px;
@@ -1783,7 +1804,7 @@ small {
     gap: 11px;
   }
   .display-title .micro-label {
-    font-size: 5px;
+    font-size: 11px;
     letter-spacing: 1px;
   }
   .display-title h1 {
@@ -1795,7 +1816,7 @@ small {
   .display-tabs button {
     padding: 8px 9px;
     min-width: 64px;
-    font-size: 8px;
+    font-size: 11px;
   }
   .camera-switch {
     left: 46%;
@@ -1822,13 +1843,13 @@ small {
     gap: 5px;
   }
   .primary-button {
-    font-size: 9px;
+    font-size: 11px;
     padding: 0 12px;
   }
   .pedal {
     min-width: 66px;
     gap: 5px;
-    font-size: 7px;
+    font-size: 11px;
     padding: 0 6px;
   }
   .pedal kbd {
@@ -1841,7 +1862,7 @@ small {
     min-width: 28px;
   }
   .keyboard-hint {
-    font-size: 6px;
+    font-size: 11px;
     margin-left: 6px;
   }
   .reset {
@@ -1922,11 +1943,11 @@ small {
     padding: 25px 17px 14px;
   }
   .cluster-top .micro-label {
-    font-size: 5px;
+    font-size: 11px;
     letter-spacing: 0.8px;
   }
   .cluster-ready {
-    font-size: 6px;
+    font-size: 11px;
     letter-spacing: 0.4px;
   }
   .gear-row {
@@ -1945,13 +1966,13 @@ small {
     font-size: 22px;
   }
   .range-grid > div > span {
-    font-size: 8px;
+    font-size: 11px;
   }
   .display-title .micro-label {
     display: none;
   }
   .display-tabs button {
-    font-size: 7px;
+    font-size: 11px;
     min-width: auto;
     padding: 8px;
   }
@@ -1984,7 +2005,7 @@ small {
   }
   .primary-button {
     height: 32px;
-    font-size: 8px;
+    font-size: 11px;
     padding: 0 10px;
     gap: 6px;
   }
@@ -1992,11 +2013,11 @@ small {
     gap: 12px;
   }
   .keyboard-hint {
-    display: none;
+    display: inline;
   }
   .pedal {
     min-width: 60px;
-    font-size: 7px;
+    font-size: 11px;
   }
   .accelerator {
     min-width: 78px;
@@ -2012,15 +2033,15 @@ small {
     min-width: 25px;
   }
   .control-caption {
-    font-size: 7px;
+    font-size: 11px;
   }
   .navigation-cue {
     left: 20px;
     top: 65px;
     min-width: 195px;
   }
-  .navigation-cue > div > span {
-    font-size: 9px;
+  .route-guidance > div > span {
+    font-size: 11px;
   }
   .hardware-deck {
     padding-left: 21px;
@@ -2042,7 +2063,7 @@ small {
     min-width: 190px;
   }
   .mechanical-switch button {
-    font-size: 7px;
+    font-size: 11px;
   }
   .app-bottomline > span:nth-child(2) {
     display: none;
@@ -2057,7 +2078,7 @@ small {
     right: 255px;
   }
   .split-view .world-tag {
-    font-size: 5px;
+    font-size: 11px;
     gap: 4px;
   }
   .split-view .scene-actions {
@@ -2081,14 +2102,14 @@ small {
     display: none;
   }
   .split-view .camera-switch button {
-    font-size: 6px;
+    font-size: 11px;
     padding: 7px 6px;
   }
   .split-view .scene-description {
     display: none;
   }
   .split-view .warning-message {
-    font-size: 7px;
+    font-size: 11px;
     white-space: normal;
     bottom: 150px;
     left: 20px;
@@ -2102,13 +2123,13 @@ small {
     font-size: 17px;
   }
   .vehicle-specs strong {
-    font-size: 9px;
+    font-size: 11px;
   }
   .setting-row > span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .setting-row small {
-    font-size: 6px;
+    font-size: 11px;
   }
 }
 @media (max-width: 680px) {
@@ -2134,7 +2155,7 @@ small {
   }
   .live-status {
     gap: 12px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .live-status > span:nth-child(2),
   .live-status > i {
@@ -2175,7 +2196,7 @@ small {
     align-self: start;
   }
   .cluster-top .micro-label {
-    font-size: 6px;
+    font-size: 11px;
   }
   .cluster-ready {
     display: none;
@@ -2189,7 +2210,7 @@ small {
     align-items: center;
   }
   .gear-row button {
-    font-size: 10px;
+    font-size: 11px;
     width: 24px;
     height: 26px;
   }
@@ -2210,7 +2231,7 @@ small {
     margin: -3px 0 0;
   }
   .speed-unit {
-    font-size: 7px;
+    font-size: 11px;
     margin-top: 3px;
   }
   .signal-row {
@@ -2249,14 +2270,14 @@ small {
     margin-top: 5px;
   }
   .range-grid > div > span {
-    font-size: 6px;
+    font-size: 11px;
     gap: 3px;
   }
   .range-grid > div > span svg {
     width: 12px;
   }
   .range-grid strong small {
-    font-size: 7px;
+    font-size: 11px;
     margin-left: 2px;
   }
   .range-grid > div + div {
@@ -2268,7 +2289,7 @@ small {
     margin-top: 7px;
   }
   .range-grid p {
-    font-size: 5px;
+    font-size: 11px;
     margin-top: 6px;
   }
   .cluster-bottom,
@@ -2294,7 +2315,7 @@ small {
     padding: 2px;
   }
   .display-tabs button {
-    font-size: 7px;
+    font-size: 11px;
     padding: 8px 7px;
   }
   .scene-container {
@@ -2306,7 +2327,7 @@ small {
     padding: 13px;
   }
   .world-tag {
-    font-size: 6px;
+    font-size: 11px;
   }
   .scene-topline {
     inset: 17px 18px auto;
@@ -2320,17 +2341,17 @@ small {
     bottom: 70px;
   }
   .scene-description > div > span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .scene-description small {
-    font-size: 6px;
+    font-size: 11px;
   }
   .camera-switch {
     left: 17px;
     bottom: 18px;
   }
   .camera-switch button {
-    font-size: 7px;
+    font-size: 11px;
     padding: 8px 7px;
   }
   .environment-switch {
@@ -2357,7 +2378,7 @@ small {
     gap: 4px;
   }
   .pedal {
-    font-size: 7px;
+    font-size: 11px;
     padding: 0 5px;
     min-width: 58px;
   }
@@ -2378,7 +2399,7 @@ small {
   }
   .drive-actions .primary-button {
     height: 31px;
-    font-size: 7px;
+    font-size: 11px;
     padding: 0 8px;
     gap: 5px;
   }
@@ -2386,7 +2407,7 @@ small {
     width: 11px;
   }
   .control-caption {
-    font-size: 6px;
+    font-size: 11px;
   }
   .hardware-deck {
     padding: 14px 18px;
@@ -2406,7 +2427,7 @@ small {
     gap: 10px;
   }
   .dial-label {
-    font-size: 8px;
+    font-size: 11px;
   }
   .knob,
   .knob-wrap {
@@ -2443,7 +2464,7 @@ small {
     margin-top: 17px;
   }
   .mechanical-switch button {
-    font-size: 6px;
+    font-size: 11px;
     padding: 8px 6px;
     flex: 1;
   }
@@ -2451,22 +2472,22 @@ small {
     padding: 7px 5px;
   }
   .hardware-footnote {
-    font-size: 5px;
+    font-size: 11px;
     margin-top: 7px;
   }
   .hardware-caption {
-    font-size: 5px;
+    font-size: 11px;
   }
   .engraved {
-    font-size: 7px;
+    font-size: 11px;
   }
   .app-bottomline {
     height: 34px;
-    font-size: 5px;
+    font-size: 11px;
     letter-spacing: 1px;
   }
   .app-bottomline > span:last-child {
-    font-size: 4px;
+    font-size: 11px;
   }
   .context-panel {
     width: 100%;
@@ -2487,7 +2508,7 @@ small {
     right: 18px;
   }
   .split-view .world-tag {
-    font-size: 6px;
+    font-size: 11px;
   }
   .split-view .scene-actions {
     display: flex;
@@ -2506,7 +2527,7 @@ small {
     display: block;
   }
   .split-view .camera-switch button {
-    font-size: 7px;
+    font-size: 11px;
     padding: 8px 7px;
   }
   .split-view .environment-switch {
@@ -2521,7 +2542,7 @@ small {
     bottom: auto;
     left: 20px;
     right: auto;
-    font-size: 9px;
+    font-size: 11px;
   }
   .map-heading {
     padding: 17px 20px;
@@ -2561,10 +2582,10 @@ small {
     padding: 10px 0;
   }
   .setting-row > span {
-    font-size: 9px;
+    font-size: 11px;
   }
   .setting-row small {
-    font-size: 7px;
+    font-size: 11px;
   }
   .settings-note {
     margin-top: 13px;

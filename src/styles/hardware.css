@@ -21,16 +21,16 @@
   opacity: 0.55;
   background: repeating-linear-gradient(0deg, #ffffff20 0 1px, #59646c08 1px 2px);
 }
-.hardware-caption, .hardware-caption .engraved { color: #59656b; }
+.hardware-caption, .hardware-caption .engraved { color: #414d54; }
 .hardware-deck .dial-label {
-  color: #48565d;
-  font-size: 10px;
+  color: #414d54;
+  font-size: 11px;
   font-weight: 550;
   text-shadow: 0 1px #ffffffb3;
 }
 .hardware-deck .dial-row { margin-top: 10px; }
 .hardware-deck .dial-step {
-  color: #536169;
+  color: #414d54;
   border: 1px solid #9aa3a566;
   background: linear-gradient(#f3f5f570, #c0c6ca55);
   box-shadow: 0 1px 0 #ffffff9c;
@@ -95,8 +95,8 @@
   outline-offset: 6px;
 }
 .hardware-deck .mode-options button {
-  color: #5c686f;
-  font-size: 9px;
+  color: #414d54;
+  font-size: 11px;
 }
 .hardware-deck .mode-options button.selected { color: #263a46; }
 .hardware-deck .mode-options button.selected:before {
@@ -104,8 +104,8 @@
   box-shadow: 0 0 4px #b8eff3;
 }
 .hardware-deck .hardware-footnote {
-  color: #5b6870;
-  font-size: 8px;
+  color: #414d54;
+  font-size: 11px;
   margin-top: 12px;
 }
 .hardware-deck .mechanical-switch {
@@ -147,14 +147,14 @@
   border: 0;
   background: none;
   box-shadow: none;
-  font-size: 9px;
-  color: #e4eaed;
+  font-size: 11px;
+  color: #fff;
   white-space: nowrap;
 }
 .hardware-deck .mechanical-switch button.selected { color: #293d49; }
 .hardware-deck .mechanical-switch button:hover:not(.selected) { color: #fff; }
-.hardware-deck .deck-statement { color: #516069; border-color: #a6afb4; }
-.hardware-deck .deck-statement small { color: #5d6b73; }
+.hardware-deck .deck-statement { color: #414d54; border-color: #a6afb4; }
+.hardware-deck .deck-statement small { color: #414d54; }
 
 /* Pearl glass remains quiet; edge lighting and telemetry marks add precision. */
 .instrument-cluster {
@@ -192,10 +192,10 @@
   .hardware-deck .hardware-footnote { margin-top: 6px; }
 }
 @media (max-width: 680px) {
-  .hardware-deck .dial-label { font-size: 9px; }
-  .hardware-deck .hardware-footnote { font-size: 7px; line-height: 1.5; }
+  .hardware-deck .dial-label { font-size: 11px; }
+  .hardware-deck .hardware-footnote { font-size: 11px; line-height: 1.5; }
   .hardware-deck .mechanical-switch button,
-  .hardware-deck .mechanical-switch button.selected { font-size: 8px; padding-inline: 3px; }
+  .hardware-deck .mechanical-switch button.selected { font-size: 11px; padding-inline: 3px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hardware-deck .knob i, .hardware-deck .mode-knob i,

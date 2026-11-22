@@ -96,4 +96,18 @@ describe("independent driving simulation", () => {
     expect(world).toEqual(copy);
     expect(next.traffic[0].distance).toBeGreaterThan(world.traffic[0].distance);
   });
+  it("accumulates trip distance independently of route wrap and reverse", () => {
+    const world = createWorld();
+    world.distance = 719;
+    world.tripDistance = 719;
+    world.speed = 10;
+    world.traffic = [];
+    const nextLap = advance(1, controls, world);
+    expect(nextLap.distance).toBeLessThan(20);
+    expect(nextLap.tripDistance).toBeGreaterThan(720);
+    const reverse = advance(1, { ...controls, gear: "R" });
+    expect(reverse.distance).toBeGreaterThan(710);
+    expect(reverse.tripDistance).toBeGreaterThan(0);
+    expect(reverse.tripDistance).toBeLessThan(3);
+  });
 });

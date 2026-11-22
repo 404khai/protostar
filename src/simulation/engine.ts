@@ -15,6 +15,7 @@ export interface TrafficVehicle {
 export interface World {
   speed: number;
   distance: number;
+  tripDistance: number;
   x: number;
   heading: number;
   battery: number;
@@ -47,6 +48,7 @@ export function createWorld(): World {
   return {
     speed: 0,
     distance: 0,
+    tripDistance: 0,
     x: 0,
     heading: 0,
     battery: 82,
@@ -182,6 +184,7 @@ export function stepWorld(
     world.warning = "Road edge · steer to centre";
   }
   const travelled = world.speed * dt;
+  world.tripDistance += travelled;
   world.distance =
     (world.distance + travelled * direction + LOOP_LENGTH) % LOOP_LENGTH;
   const consumption = travelled * (0.00036 + throttle * 0.00012);

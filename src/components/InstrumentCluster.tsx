@@ -125,7 +125,7 @@ export default function InstrumentCluster() {
           <span>
             Since departure
             <strong>
-              {(world.distance / 1000).toFixed(2)} <small>km</small>
+              {(world.tripDistance / 1000).toFixed(2)} <small>km</small>
             </strong>
           </span>
         </div>

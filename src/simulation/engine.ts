@@ -38,6 +38,7 @@ export interface Controls {
 }
 export const ROAD_HALF_WIDTH = 5.65;
 export const LOOP_LENGTH = 720;
+export const CROSSING_DISTANCE = 250;
 export const rangeFor = (battery: number) => Math.round(battery * 4.35);
 export const relativeDistance = (distance: number, origin: number) =>
   ((((distance - origin + LOOP_LENGTH / 2) % LOOP_LENGTH) + LOOP_LENGTH) %
@@ -56,7 +57,7 @@ export function createWorld(): World {
     power: 0,
     warning: null,
     signal: "green",
-    signalDistance: 250,
+    signalDistance: CROSSING_DISTANCE,
     pedestrianX: -10,
     traffic: [
       { id: 0, x: -3.7, distance: 30, speed: 12, color: "#879b99", van: false },
@@ -98,13 +99,13 @@ export function stepWorld(
   world.elapsed += dt;
   world.warning = null;
   world.signal = world.elapsed % 32 < 23 ? "green" : "red";
-  world.signalDistance = relativeDistance(250, world.distance);
+  world.signalDistance = relativeDistance(CROSSING_DISTANCE, world.distance);
   world.pedestrianX =
     world.signal === "red" ? -8 + (((world.elapsed % 32) - 23) / 9) * 16 : -10;
 
   // Vehicles slow for the crossing, as well as for another car in their lane.
   for (const vehicle of world.traffic) {
-    const stopDistance = relativeDistance(246, vehicle.distance);
+    const stopDistance = relativeDistance(CROSSING_DISTANCE - 4, vehicle.distance);
     const stoppingDistance = (vehicle.speed * vehicle.speed) / (2 * 5) + 8;
     let gap = previous.traffic.reduce((nearest, other) => {
       const distance = relativeDistance(other.distance, vehicle.distance);
@@ -187,6 +188,7 @@ export function stepWorld(
   world.tripDistance += travelled;
   world.distance =
     (world.distance + travelled * direction + LOOP_LENGTH) % LOOP_LENGTH;
+  world.signalDistance = relativeDistance(CROSSING_DISTANCE, world.distance);
   const consumption = travelled * (0.00036 + throttle * 0.00012);
   const recovered = controls.brake > 0 && world.speed > 0 ? dt * 0.0009 : 0;
   world.battery = Math.max(

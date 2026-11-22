@@ -16,8 +16,9 @@ import {
 } from "lucide-react";
 import { useCockpit } from "../stores/cockpit";
 
-export function useDrivingKeys() {
+export function useDrivingKeys(enabled = true) {
   useEffect(() => {
+    if (!enabled) return;
     const pressed = new Set<string>();
     const drivingKeys = [
       "w",
@@ -59,6 +60,8 @@ export function useDrivingKeys() {
       const key = event.key.toLowerCase();
       if (drivingKeys.includes(key)) {
         event.preventDefault();
+        // Closing the guide while holding a key must not restart an old input.
+        if (event.repeat && !pressed.has(key)) return;
         pressed.add(key);
         sync();
       }
@@ -70,7 +73,9 @@ export function useDrivingKeys() {
     };
     const clear = () => {
       pressed.clear();
-      useCockpit.getState().setInput({ throttle: 0, brake: 0, steering: 0 });
+      const { controls, setInput } = useCockpit.getState();
+      if (controls.throttle || controls.brake || controls.steering)
+        setInput({ throttle: 0, brake: 0, steering: 0 });
     };
     const visibility = () => {
       if (document.hidden) clear();
@@ -86,7 +91,7 @@ export function useDrivingKeys() {
       document.removeEventListener("visibilitychange", visibility);
       clear();
     };
-  }, []);
+  }, [enabled]);
 }
 
 function HoldButton({
@@ -220,6 +225,7 @@ function Dial({
         <button
           className="dial-step"
           aria-label={`Decrease ${label.toLowerCase()}`}
+          disabled={value <= min}
           onClick={() => onChange(value - step)}
         >
           <Minus size={14} />
@@ -238,6 +244,13 @@ function Dial({
           </div>
           <input
             aria-label={label}
+            aria-valuetext={
+              label === "Temperature"
+                ? `${value} degrees Celsius`
+                : value === 0
+                  ? "Off"
+                  : `${value} percent`
+            }
             type="range"
             min={min}
             max={max}
@@ -249,6 +262,7 @@ function Dial({
         <button
           className="dial-step"
           aria-label={`Increase ${label.toLowerCase()}`}
+          disabled={value >= max}
           onClick={() => onChange(value + step)}
         >
           <Plus size={14} />

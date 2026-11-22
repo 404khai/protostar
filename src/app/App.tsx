@@ -189,6 +189,27 @@ function VehiclePanel() {
   );
 }
 
+function NavigationCue() {
+  const signalDistance = useCockpit((state) =>
+    Math.max(0, Math.round(state.world.signalDistance)),
+  );
+  return (
+    <div className="navigation-cue">
+      <div className="direction-icon">
+        <ArrowUp size={24} strokeWidth={1.5} />
+      </div>
+      <div>
+        <strong>
+          {signalDistance > 0 ? signalDistance : "—"} <small>m</small>
+        </strong>
+        <span>Continue straight</span>
+        <small>Observatory Drive</small>
+      </div>
+      <Navigation2 size={16} className="navigation-mini" />
+    </div>
+  );
+}
+
 function Help({ close }: { close: () => void }) {
   return (
     <div className="modal-backdrop" onClick={close}>
@@ -267,9 +288,6 @@ export default function App() {
     (state) => state.controls.gear !== "D" && state.world.speed > 0.5,
   );
   const warning = useCockpit((state) => state.world.warning);
-  const signalDistance = useCockpit((state) =>
-    Math.max(0, Math.round(state.world.signalDistance)),
-  );
   const state = useCockpit.getState();
   useDrivingKeys();
   useEffect(() => startSimulation(), []);
@@ -387,21 +405,7 @@ export default function App() {
                 </button>
               </div>
             </div>
-            {hud && (
-              <div className="navigation-cue">
-                <div className="direction-icon">
-                  <ArrowUp size={24} strokeWidth={1.5} />
-                </div>
-                <div>
-                  <strong>
-                    {signalDistance > 0 ? signalDistance : "—"} <small>m</small>
-                  </strong>
-                  <span>Continue straight</span>
-                  <small>Observatory Drive</small>
-                </div>
-                <Navigation2 size={16} className="navigation-mini" />
-              </div>
-            )}
+            {hud && <NavigationCue />}
             <div className="scene-description">
               <span className="coordinate-mark">+</span>
               <div>

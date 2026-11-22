@@ -1,8 +1,24 @@
+import { memo, useLayoutEffect, useRef } from "react";
 import { ArrowUpRight, Flag, MapPin } from "lucide-react";
 import { useCockpit } from "../stores/cockpit";
 
-export default function RouteMap({ expanded = false }: { expanded?: boolean }) {
-  const distance = useCockpit((state) => state.world.distance);
+function RouteMap({ expanded = false }: { expanded?: boolean }) {
+  const marker = useRef<SVGGElement>(null);
+  const remaining = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const update = () => {
+      const distance = useCockpit.getState().world.distance;
+      marker.current?.setAttribute(
+        "transform",
+        `translate(118 ${220 - ((distance % 720) / 720) * 165})`,
+      );
+      const text = `${Math.max(0, 720 - distance).toFixed(0)} m remaining · Simulated route`;
+      if (remaining.current && remaining.current.textContent !== text)
+        remaining.current.textContent = text;
+    };
+    update();
+    return useCockpit.subscribe(update);
+  }, []);
   return (
     <div className={`route-map ${expanded ? "expanded" : ""}`}>
       <div className="map-heading">
@@ -63,7 +79,7 @@ export default function RouteMap({ expanded = false }: { expanded?: boolean }) {
             PROSPECT BAY
           </text>
         </g>
-        <g transform={`translate(118 ${220 - ((distance % 720) / 720) * 165})`}>
+        <g ref={marker}>
           <circle r="13" fill="#fff" />
           <circle r="9" fill="#325b4a" />
           <path d="M0 -5L4 5L0 3L-4 5Z" fill="#fff" />
@@ -81,10 +97,7 @@ export default function RouteMap({ expanded = false }: { expanded?: boolean }) {
         <MapPin size={17} />
         <span>
           Observatory loop
-          <small>
-            {Math.max(0, 720 - distance).toFixed(0)} m remaining · Simulated
-            route
-          </small>
+          <small ref={remaining} />
         </span>
         <ArrowUpRight size={20} />
       </div>
@@ -103,3 +116,5 @@ export default function RouteMap({ expanded = false }: { expanded?: boolean }) {
     </div>
   );
 }
+
+export default memo(RouteMap);

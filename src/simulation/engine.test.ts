@@ -63,6 +63,19 @@ describe("independent driving simulation", () => {
     expect(next.speed).toBe(0);
     expect(next.warning).toBe("Safe distance hold");
   });
+  it("keeps moving traffic behind a parked ego across multiple laps", () => {
+    let world = createWorld();
+    for (let i = 0; i < 90 * 30; i++) {
+      world = stepWorld(world, { ...controls, gear: "P", throttle: 0 }, 1 / 30);
+      for (const vehicle of world.traffic.filter(
+        (vehicle) => vehicle.x === 0,
+      )) {
+        expect(
+          Math.abs(relativeDistance(vehicle.distance, world.distance)),
+        ).toBeGreaterThanOrEqual(5.99);
+      }
+    }
+  });
   it("brakes for a red crossing and releases it on green", () => {
     const world = createWorld();
     world.elapsed = 25;

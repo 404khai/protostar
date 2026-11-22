@@ -103,29 +103,31 @@ export function stepWorld(
   // Vehicles slow for the crossing, as well as for another car in their lane.
   for (const vehicle of world.traffic) {
     const stopDistance = relativeDistance(246, vehicle.distance);
-    const vehicleAhead = previous.traffic.some(
-      (other) =>
-        other.id !== vehicle.id &&
+    const stoppingDistance = (vehicle.speed * vehicle.speed) / (2 * 5) + 8;
+    let gap = previous.traffic.reduce((nearest, other) => {
+      const distance = relativeDistance(other.distance, vehicle.distance);
+      return other.id !== vehicle.id &&
         Math.abs(other.x - vehicle.x) < 2 &&
-        relativeDistance(other.distance, vehicle.distance) > 0 &&
-        relativeDistance(other.distance, vehicle.distance) < 11,
-    );
+        distance > 0
+        ? Math.min(nearest, distance)
+        : nearest;
+    }, Infinity);
     const egoDistance = relativeDistance(previous.distance, vehicle.distance);
-    const egoAhead =
-      Math.abs(previous.x - vehicle.x) < 2 &&
-      egoDistance > 0 &&
-      egoDistance < 12;
-    const stopping =
-      vehicleAhead ||
-      egoAhead ||
-      (world.signal === "red" && stopDistance > 0 && stopDistance < 20);
+    if (Math.abs(previous.x - vehicle.x) < 2 && egoDistance > 0)
+      gap = Math.min(gap, egoDistance);
+    if (world.signal === "red" && stopDistance > 0)
+      gap = Math.min(gap, stopDistance);
+    const stopping = gap < stoppingDistance;
     const target = stopping ? 0 : 10 + (vehicle.id % 4) * 2;
     vehicle.speed = Math.max(
       0,
       vehicle.speed +
         Math.max(-5 * dt, Math.min(1.6 * dt, target - vehicle.speed)),
     );
-    vehicle.distance = (vehicle.distance + vehicle.speed * dt) % LOOP_LENGTH;
+    // Enforce a minimum centre-to-centre gap even after a sudden cut-in.
+    const travel = Math.min(vehicle.speed * dt, Math.max(0, gap - 6));
+    if (travel < vehicle.speed * dt) vehicle.speed = travel / dt;
+    vehicle.distance = (vehicle.distance + travel) % LOOP_LENGTH;
   }
 
   const direction = controls.gear === "R" ? -1 : 1;

@@ -263,6 +263,9 @@ export default function App() {
   const weather = useCockpit((state) => state.weather);
   const hud = useCockpit((state) => state.hud);
   const controls = useCockpit((state) => state.controls);
+  const demoInterlocked = useCockpit(
+    (state) => state.controls.gear !== "D" && state.world.speed > 0.5,
+  );
   const warning = useCockpit((state) => state.world.warning);
   const signalDistance = useCockpit((state) =>
     Math.max(0, Math.round(state.world.signalDistance)),
@@ -478,6 +481,12 @@ export default function App() {
               <button
                 className={`primary-button ${controls.cruise ? "cruising" : ""}`}
                 onClick={state.drive}
+                disabled={demoInterlocked}
+                title={
+                  demoInterlocked
+                    ? "Stop before starting a forward demo drive"
+                    : undefined
+                }
               >
                 {controls.cruise ? (
                   <>

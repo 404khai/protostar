@@ -22,3 +22,17 @@ it("reset returns all driving telemetry to a stationary safe state", () => {
   expect(useCockpit.getState().world.battery).toBe(82);
   expect(useCockpit.getState().turnSignal).toBe(null);
 });
+it("demo start cannot change reverse gear while the car is moving", () => {
+  const state = useCockpit.getState();
+  state.gear("R");
+  state.setInput({ throttle: 1 });
+  for (let i = 0; i < 60; i++) useCockpit.getState().tick(1 / 30);
+  expect(useCockpit.getState().world.speed).toBeGreaterThan(0.5);
+  state.drive();
+  expect(useCockpit.getState().controls.gear).toBe("R");
+  expect(useCockpit.getState().controls.cruise).toBe(false);
+  state.setInput({ throttle: 0, brake: 1 });
+  for (let i = 0; i < 60; i++) useCockpit.getState().tick(1 / 30);
+  state.drive();
+  expect(useCockpit.getState().controls.gear).toBe("D");
+});

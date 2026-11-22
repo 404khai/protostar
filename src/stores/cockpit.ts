@@ -83,7 +83,8 @@ export const useCockpit = create<CockpitState>((set, get) => ({
     set({ temperature: Math.min(28, Math.max(16, temperature)) }),
   setVolume: (volume) => set({ volume: Math.min(100, Math.max(0, volume)) }),
   setSuspension: (suspension) => set({ suspension }),
-  drive: () =>
+  drive: () => {
+    if (get().controls.gear !== "D" && get().world.speed > 0.5) return;
     set((state) => ({
       controls: {
         ...state.controls,
@@ -91,7 +92,8 @@ export const useCockpit = create<CockpitState>((set, get) => ({
         cruise: !state.controls.cruise,
         paused: false,
       },
-    })),
+    }));
+  },
   pause: () =>
     set((state) => ({
       controls: {

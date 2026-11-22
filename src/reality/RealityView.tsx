@@ -1,6 +1,6 @@
-import { Component, Suspense, useMemo, useRef } from "react";
-import type { ReactNode } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Component, Suspense, useLayoutEffect, useMemo, useRef } from "react";
+import type { ComponentRef, ReactNode } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Color, Group, Vector3 } from "three";
 import { useCockpit } from "../stores/cockpit";
@@ -11,10 +11,47 @@ const palette = { day: "#e9ede8", night: "#182329" };
 const lookAt = new Vector3();
 const cameraPosition = new Vector3();
 
+function InspectionCamera() {
+  const camera = useThree((state) => state.camera);
+  const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
+  const previousX = useRef(0);
+  useLayoutEffect(() => {
+    const x = useCockpit.getState().world.x;
+    previousX.current = x;
+    // Never inherit the first-person camera's position inside the coachwork.
+    camera.position.set(x + 8, 10, 16);
+    controls.current?.target.set(x, 0.8, -1);
+    controls.current?.update();
+  }, [camera]);
+  useFrame(() => {
+    const x = useCockpit.getState().world.x;
+    const deltaX = x - previousX.current;
+    // Preserve the user's inspection angle and pan as the ego vehicle steers.
+    camera.position.x += deltaX;
+    if (controls.current) controls.current.target.x += deltaX;
+    previousX.current = x;
+  }, -2);
+  return (
+    <OrbitControls
+      ref={controls}
+      makeDefault
+      minDistance={8}
+      maxDistance={80}
+      maxPolarAngle={Math.PI / 2 - 0.04}
+    />
+  );
+}
+
 function CameraRig() {
   const mode = useCockpit((state) => state.camera);
+  const previousMode = useRef(mode);
+  const target = useRef(new Vector3(0, 0.5, -13));
   useFrame(({ camera }, dt) => {
     if (mode === "Orbit") return;
+    if (previousMode.current !== mode) {
+      camera.getWorldDirection(target.current);
+      target.current.multiplyScalar(35).add(camera.position);
+    }
     const state = useCockpit.getState();
     const x = state.world.x;
     if (mode === "Overhead") {
@@ -22,7 +59,7 @@ function CameraRig() {
       lookAt.set(x, 0, -13);
     } else if (mode === "Driver") {
       cameraPosition.set(x - 0.35, 1.9, -1.3);
-      lookAt.set(x + state.world.heading * 15, 1.4, -55);
+      lookAt.set(x + Math.tan(state.world.heading) * 54, 1.4, -55);
     } else {
       // Keep the chase camera over the road, clear of roadside trees and
       // buildings even when the vehicle is steered to the right boundary.
@@ -30,17 +67,15 @@ function CameraRig() {
       lookAt.set(x - 1, 0.5, -13);
     }
     camera.position.lerp(cameraPosition, 1 - Math.exp(-dt * 4));
-    camera.lookAt(lookAt);
+    target.current.lerp(lookAt, 1 - Math.exp(-dt * 5));
+    camera.lookAt(target.current);
+    previousMode.current = mode;
   });
-  return mode === "Orbit" ? (
-    <OrbitControls
-      makeDefault
-      target={[0, 0, -8]}
-      minDistance={8}
-      maxDistance={80}
-      maxPolarAngle={Math.PI / 2 - 0.04}
-    />
-  ) : null;
+  // Track Orbit too, so leaving it blends from the actual inspection angle.
+  useLayoutEffect(() => {
+    if (mode === "Orbit") previousMode.current = mode;
+  }, [mode]);
+  return mode === "Orbit" ? <InspectionCamera /> : null;
 }
 
 function Road() {
@@ -48,6 +83,7 @@ function Road() {
   const crossing = useRef<Group>(null);
   const path = useRef<Group>(null);
   const night = useCockpit((state) => state.night);
+  const weather = useCockpit((state) => state.weather);
   useFrame(() => {
     const { world } = useCockpit.getState();
     if (lines.current) lines.current.position.z = world.distance % 10;
@@ -59,8 +95,8 @@ function Road() {
       <mesh position={[0, -0.17, -90]} receiveShadow>
         <boxGeometry args={[15, 0.3, 380]} />
         <meshStandardMaterial
-          color={night ? "#343f44" : "#afb9b6"}
-          roughness={0.94}
+          color={night ? "#343f44" : "#71807b"}
+          roughness={weather === "Rain" ? 0.48 : 0.94}
         />
       </mesh>
       {[-1, 1].map((side) => (
@@ -74,7 +110,7 @@ function Road() {
             <meshStandardMaterial color={night ? "#293738" : "#d7dcd4"} />
           </mesh>
           <mesh position={[side * 6.7, 0.005, -90]}>
-            <boxGeometry args={[0.075, 0.02, 380]} />
+            <boxGeometry args={[0.12, 0.02, 380]} />
             <meshBasicMaterial color={night ? "#d4d4bd" : "#f5f5ec"} />
           </mesh>
         </group>
@@ -83,7 +119,7 @@ function Road() {
         {[-1.85, 1.85].flatMap((x) =>
           Array.from({ length: 37 }, (_, i) => (
             <mesh key={`${x}-${i}`} position={[x, 0.012, 75 - i * 10]}>
-              <boxGeometry args={[0.07, 0.025, 4]} />
+              <boxGeometry args={[0.12, 0.025, 4]} />
               <meshBasicMaterial color={night ? "#c0c9c4" : "#f3f6ef"} />
             </mesh>
           )),
@@ -93,9 +129,9 @@ function Road() {
         <mesh position={[0, 0.03, -24]}>
           <boxGeometry args={[1.7, 0.015, 44]} />
           <meshBasicMaterial
-            color="#78ada0"
+            color={night ? "#78ada0" : "#397f70"}
             transparent
-            opacity={night ? 0.26 : 0.18}
+            opacity={0.26}
             depthWrite={false}
           />
         </mesh>
@@ -109,7 +145,7 @@ function Road() {
               >
                 <boxGeometry args={[0.07, 0.02, 0.7]} />
                 <meshBasicMaterial
-                  color="#649b8d"
+                  color={night ? "#649b8d" : "#286b5b"}
                   transparent
                   opacity={0.65 - i * 0.07}
                 />
@@ -315,6 +351,7 @@ function MovingVehicles() {
         {initial.map((vehicle) => (
           <group key={vehicle.id} position={[vehicle.x, 0, -vehicle.distance]}>
             <Vehicle
+              trafficId={vehicle.id}
               color={vehicle.color}
               van={vehicle.van}
               perception={perception}

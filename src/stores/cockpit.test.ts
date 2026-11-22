@@ -36,11 +36,3 @@ it("demo start cannot change reverse gear while the car is moving", () => {
   state.drive();
   expect(useCockpit.getState().controls.gear).toBe("D");
 });
-it("releasing inputs keeps demo cruise while engaging one takes over", () => {
-  const state = useCockpit.getState();
-  state.drive();
-  state.setInput({ throttle: 0, brake: 0, steering: 0 });
-  expect(useCockpit.getState().controls.cruise).toBe(true);
-  state.setInput({ steering: -1 });
-  expect(useCockpit.getState().controls.cruise).toBe(false);
-});

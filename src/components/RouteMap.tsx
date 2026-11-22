@@ -1,102 +1,107 @@
-import { ArrowUpRight, Flag, MapPin } from "lucide-react";
+import { Flag, MapPin } from "lucide-react";
 import { useCockpit } from "../stores/cockpit";
+import { CROSSING_DISTANCE, LOOP_LENGTH } from "../simulation/engine";
+import RouteGuidance from "./RouteGuidance";
+import { useRouteGuidance } from "../stores/useRouteGuidance";
 
 export default function RouteMap({ expanded = false }: { expanded?: boolean }) {
-  const distance = useCockpit((state) => state.world.distance);
+  const guidance = useRouteGuidance();
+  const x = useCockpit((state) => state.world.x);
+  const signal = useCockpit((state) => state.world.signal);
+  const mapY = (distance: number) => 246 - (distance / LOOP_LENGTH) * 216;
   return (
     <div className={`route-map ${expanded ? "expanded" : ""}`}>
       <div className="map-heading">
-        <span>THE SCENIC ROUTE</span>
-        <span>N ↑</span>
+        <span>TEST ROAD · SCHEMATIC</span>
+        <span>{LOOP_LENGTH} M</span>
       </div>
       <svg
         viewBox="0 0 320 280"
         role="img"
-        aria-label="Simulated loop route along Observatory Drive"
+        aria-label={`Straight wrapping test road. Vehicle at ${Math.round(guidance.position)} metres; crossing at ${CROSSING_DISTANCE} metres.`}
       >
         <rect width="320" height="280" fill="#e6e9df" />
-        <path d="M238 -10 Q185 60 253 100 T268 300H330V-10Z" fill="#c7dad7" />
+        <path d="M250 -10 Q218 75 267 130 T278 290H330V-10Z" fill="#c7dad7" />
+        <path d="M150 30V246" stroke="#f8f8f1" strokeWidth="64" />
         <path
-          d="M0 43H230M0 102H250M0 167H252M0 229H250M50 0V280M118 0V280M186 0V280"
-          stroke="#f8f8f1"
-          strokeWidth="12"
-          fill="none"
-        />
-        <path
-          d="M0 43H230M0 102H250M0 167H252M0 229H250M50 0V280M118 0V280M186 0V280"
+          d="M140 30V246M160 30V246"
           stroke="#cbd0c4"
-          strokeWidth="0.7"
-          fill="none"
+          strokeDasharray="7 6"
         />
+        <path d="M150 246V30" stroke="#548a78" strokeWidth="3" opacity=".5" />
         <path
-          d="M118 227V44H186V227Z"
-          stroke="#6e9e8e"
-          strokeWidth="9"
-          strokeLinejoin="round"
-          fill="none"
-          opacity=".18"
-        />
-        <path
-          d="M118 227V44H186V227Z"
-          stroke="#548a78"
-          strokeWidth="3"
-          strokeLinejoin="round"
+          d="M183 30H215V246H183"
+          stroke="#8b9890"
+          strokeWidth="1.5"
+          strokeDasharray="4 4"
           fill="none"
         />
-        <path
-          d="M280 0Q209 70 281 126T302 280"
-          fill="none"
-          stroke="#8bbdb8"
-          strokeWidth="1"
-        />
-        <g fill="#717c71" fontSize="7" fontFamily="sans-serif">
-          <text x="11" y="89">
-            NORTH QUARTER
+        <g fill="#717c71" fontSize="8" fontFamily="sans-serif">
+          <text x="13" y="34">
+            {LOOP_LENGTH} M · RESTART
           </text>
-          <text x="133" y="150" transform="rotate(-90 133 150)">
-            OBSERVATORY DR.
+          <text x="13" y="250">
+            0 M · START
           </text>
-          <text x="201" y="199">
-            COASTAL PARK
-          </text>
-          <text x="12" y="258">
+          <text x="252" y="192" transform="rotate(-90 252 192)">
             PROSPECT BAY
           </text>
+          <text x="232" y="177" transform="rotate(-90 232 177)">
+            WRAPS TO START
+          </text>
+          <text x="111" y="228" transform="rotate(-90 111 228)">
+            OBSERVATORY DR.
+          </text>
+          <text x="13" y={mapY(CROSSING_DISTANCE) - 7}>
+            CROSSING
+          </text>
+          <text x="13" y={mapY(CROSSING_DISTANCE) + 6}>
+            {CROSSING_DISTANCE} M
+          </text>
         </g>
-        <g transform={`translate(118 ${220 - ((distance % 720) / 720) * 165})`}>
+        <g
+          transform={`translate(120 ${mapY(CROSSING_DISTANCE) - 6})`}
+          fill="#a7b4a8"
+        >
+          {[0, 10, 20, 30, 40, 50].map((offset) => (
+            <rect key={offset} x={offset} width="6" height="12" />
+          ))}
+        </g>
+        <circle
+          cx="191"
+          cy={mapY(CROSSING_DISTANCE)}
+          r="4"
+          fill={signal === "red" ? "#b4574e" : "#548a78"}
+        />
+        <g
+          transform={`translate(${150 + x * 4} ${mapY(guidance.position)}) rotate(${guidance.reverse ? 180 : 0})`}
+        >
           <circle r="13" fill="#fff" />
           <circle r="9" fill="#325b4a" />
           <path d="M0 -5L4 5L0 3L-4 5Z" fill="#fff" />
         </g>
-        <circle
-          cx="186"
-          cy="44"
-          r="5"
-          fill="#325b4a"
-          stroke="#fff"
-          strokeWidth="3"
-        />
       </svg>
       <div className="map-destination">
         <MapPin size={17} />
         <span>
-          Observatory loop
+          Observatory test loop
           <small>
-            {Math.max(0, 720 - distance).toFixed(0)} m remaining · Simulated
-            route
+            {guidance.toRestart} m to restart ·{" "}
+            {guidance.reverse ? "Reverse" : "Forward"}
           </small>
         </span>
-        <ArrowUpRight size={20} />
       </div>
       {expanded && (
         <div className="route-details">
-          <div>
+          <RouteGuidance />
+          <div className="route-caption">
             <Flag size={16} />
             <span>A drive, not a destination.</span>
           </div>
           <p>
-            A continuous 720 m test loop with moving traffic, a pedestrian
-            crossing and three lanes to explore.
+            A straight {LOOP_LENGTH} m road with three lanes and a pedestrian
+            crossing. The scene wraps at the end; no turns are required. This
+            schematic follows the same vehicle position as Reality View.
           </p>
         </div>
       )}

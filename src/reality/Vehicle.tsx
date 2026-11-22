@@ -47,13 +47,13 @@ export function Vehicle({
     shape.lineTo(1.18, 1.08);
     shape.closePath();
     const geometry = new ExtrudeGeometry(shape, {
-      depth: 1.91,
+      depth: 2.13,
       bevelEnabled: true,
       bevelSize: 0.035,
       bevelThickness: 0.025,
       bevelSegments: 2,
     });
-    geometry.translate(0, 0, -0.955);
+    geometry.translate(0, 0, -1.065);
     return geometry;
   }, [van]);
   return (
@@ -73,8 +73,39 @@ export function Vehicle({
           roughness={0.2}
         />
       </mesh>
+      {/* Panoramic roof and sloped screens sit outside the coachwork bevel. */}
+      <mesh position={[0, van ? 2.055 : 1.675, 0.15]} rotation={[0.02, 0, 0]}>
+        <boxGeometry args={[1.62, 0.035, 1.35]} />
+        <meshStandardMaterial
+          color="#263a40"
+          metalness={0.4}
+          roughness={0.22}
+        />
+      </mesh>
+      <mesh
+        position={[0, van ? 1.57 : 1.35, -1.05]}
+        rotation={[-(van ? 0.7 : 0.99), 0, 0]}
+      >
+        <boxGeometry args={[1.69, van ? 1.12 : 0.94, 0.035]} />
+        <meshStandardMaterial
+          color="#263a40"
+          metalness={0.4}
+          roughness={0.22}
+        />
+      </mesh>
+      <mesh
+        position={[0, van ? 1.56 : 1.35, 1.22]}
+        rotation={[van ? 0.55 : 0.83, 0, 0]}
+      >
+        <boxGeometry args={[1.67, van ? 1.05 : 0.86, 0.035]} />
+        <meshStandardMaterial
+          color="#263a40"
+          metalness={0.4}
+          roughness={0.22}
+        />
+      </mesh>
       {/* A fine silver B-pillar breaks the side glass. */}
-      {[-0.99, 0.99].map((x) => (
+      {[-1.105, 1.105].map((x) => (
         <mesh key={x} position={[x, 1.3, 0.1]}>
           <boxGeometry args={[0.035, 0.45, 0.065]} />
           <meshStandardMaterial color={color} metalness={0.7} roughness={0.3} />

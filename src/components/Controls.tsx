@@ -42,6 +42,7 @@ export function useDrivingKeys() {
           (pressed.has("a") || pressed.has("arrowleft") ? 1 : 0),
       });
     const keydown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
       if (
         (event.target as HTMLElement).closest(
           'input, select, textarea, [role="slider"]',
@@ -51,8 +52,10 @@ export function useDrivingKeys() {
       if (
         (event.target as HTMLElement).closest("button") &&
         [" ", "Enter"].includes(event.key)
-      )
-        return;
+      ) {
+        if (event.key !== " " || useCockpit.getState().world.speed === 0)
+          return;
+      }
       const key = event.key.toLowerCase();
       if (drivingKeys.includes(key)) {
         event.preventDefault();

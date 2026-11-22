@@ -1261,7 +1261,7 @@ small {
   justify-content: space-between;
   color: #909495;
 }
-.route-map svg {
+.route-map > svg {
   display: block;
   width: 100%;
   height: auto;
@@ -2524,7 +2524,7 @@ small {
   .map-heading {
     padding: 17px 20px;
   }
-  .route-map svg {
+  .route-map > svg {
     height: 200px;
     min-height: 0;
     object-fit: cover;

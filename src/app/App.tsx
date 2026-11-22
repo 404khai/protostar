@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  ArrowUp,
   BatteryMedium,
   Check,
   ChevronDown,
@@ -12,7 +11,6 @@ import {
   Layers3,
   Maximize2,
   Moon,
-  Navigation2,
   Pause,
   Play,
   Settings2,
@@ -27,6 +25,7 @@ import {
 } from "../components/Controls";
 import InstrumentCluster from "../components/InstrumentCluster";
 import RouteMap from "../components/RouteMap";
+import RouteGuidance from "../components/RouteGuidance";
 import RealityView from "../reality/RealityView";
 import type { CameraMode } from "../simulation/engine";
 import { containDialogFocus } from "../components/dialogFocus";
@@ -190,91 +189,92 @@ function VehiclePanel() {
   );
 }
 
-function NavigationCue() {
-  const signalDistance = useCockpit((state) =>
-    Math.max(0, Math.round(state.world.signalDistance)),
-  );
-  return (
-    <div className="navigation-cue">
-      <div className="direction-icon">
-        <ArrowUp size={24} strokeWidth={1.5} />
-      </div>
-      <div>
-        <strong>
-          {signalDistance > 0 ? signalDistance : "—"} <small>m</small>
-        </strong>
-        <span>Continue straight</span>
-        <small>Observatory Drive</small>
-      </div>
-      <Navigation2 size={16} className="navigation-mini" />
-    </div>
-  );
-}
-
 function Help({ close }: { close: () => void }) {
-  const dialog = useRef<HTMLElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    if (dialog.current) return containDialogFocus(dialog.current, close);
+    const element = dialog.current!;
+    const releaseFocus = containDialogFocus(element, close);
+    const wasPaused = useCockpit.getState().controls.paused;
+    if (!wasPaused) useCockpit.getState().pause();
+    element.showModal();
+    return () => {
+      element.close();
+      if (!wasPaused && useCockpit.getState().controls.paused)
+        useCockpit.getState().pause();
+      releaseFocus();
+    };
   }, [close]);
   return (
-    <div className="modal-backdrop" onClick={close}>
-      <section
-        className="help-dialog"
-        ref={dialog}
-        tabIndex={-1}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="help-title"
-        onClick={(event) => event.stopPropagation()}
+    <dialog
+      ref={dialog}
+      className="help-dialog"
+      aria-modal="true"
+      aria-labelledby="help-title"
+      aria-describedby="help-description"
+      onCancel={(event) => {
+        event.preventDefault();
+        close();
+      }}
+      onClick={(event) => {
+        if (event.target !== event.currentTarget) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom
+        )
+          close();
+      }}
+    >
+      <button
+        className="icon-button modal-close"
+        aria-label="Close driving guide"
+        onClick={close}
       >
-        <button
-          className="icon-button modal-close"
-          aria-label="Close driving guide"
-          onClick={close}
-        >
-          <X size={20} />
-        </button>
-        <span className="micro-label">MEET YOUR PROTOSTAR</span>
-        <h2 id="help-title">Take the long way.</h2>
-        <p>
-          Start a demo drive, or press D while parked and take the wheel.
-          Everything you see responds to the same vehicle state.
-        </p>
-        <dl>
-          <div>
-            <dt>
-              <kbd>W</kbd> / <kbd>↑</kbd>
-            </dt>
-            <dd>Accelerate</dd>
-          </div>
-          <div>
-            <dt>
-              <kbd>S</kbd> / <kbd>↓</kbd> / <kbd>Space</kbd>
-            </dt>
-            <dd>Brake</dd>
-          </div>
-          <div>
-            <dt>
-              <kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd>
-            </dt>
-            <dd>Steer</dd>
-          </div>
-          <div>
-            <dt>
-              <kbd>Q</kbd> / <kbd>E</kbd>
-            </dt>
-            <dd>Turn signals</dd>
-          </div>
-        </dl>
-        <p className="help-note">
-          Stop before changing gears. Manual input cancels demo cruise. The
-          simulator brakes for traffic and the pedestrian crossing.
-        </p>
-        <button className="primary-button" onClick={close}>
-          Understood <Check size={16} />
-        </button>
-      </section>
-    </div>
+        <X size={20} />
+      </button>
+      <span className="micro-label">MEET YOUR PROTOSTAR</span>
+      <h2 id="help-title">Take the long way.</h2>
+      <p id="help-description">
+        Simulation is paused while this guide is open. Close it to return to
+        your drive. Start a demo drive, or press D while parked and take the wheel.
+        Everything you see responds to the same vehicle state.
+      </p>
+      <dl>
+        <div>
+          <dt>
+            <kbd>W</kbd> / <kbd>↑</kbd>
+          </dt>
+          <dd>Accelerate</dd>
+        </div>
+        <div>
+          <dt>
+            <kbd>S</kbd> / <kbd>↓</kbd> / <kbd>Space</kbd>
+          </dt>
+          <dd>Brake</dd>
+        </div>
+        <div>
+          <dt>
+            <kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd>
+          </dt>
+          <dd>Steer</dd>
+        </div>
+        <div>
+          <dt>
+            <kbd>Q</kbd> / <kbd>E</kbd>
+          </dt>
+          <dd>Turn signals</dd>
+        </div>
+      </dl>
+      <p className="help-note">
+        Stop before changing gears. Manual input cancels demo cruise. The
+        simulator brakes for traffic and the pedestrian crossing.
+      </p>
+      <button className="primary-button" onClick={close}>
+        Understood <Check size={16} />
+      </button>
+    </dialog>
   );
 }
 
@@ -301,13 +301,13 @@ export default function App() {
   useEffect(() => {
     const escape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setHelp(false);
-        setExpanded(false);
+        if (help) setHelp(false);
+        else setExpanded(false);
       }
     };
     window.addEventListener("keydown", escape);
     return () => window.removeEventListener("keydown", escape);
-  }, []);
+  }, [help]);
   const cameras: CameraMode[] = ["Follow", "Overhead", "Driver", "Orbit"];
   return (
     <div
@@ -412,7 +412,7 @@ export default function App() {
                 </button>
               </div>
             </div>
-            {hud && <NavigationCue />}
+            {hud && <RouteGuidance className="navigation-cue" />}
             <div className="scene-description">
               <span className="coordinate-mark">+</span>
               <div>
@@ -468,7 +468,7 @@ export default function App() {
               </button>
             </div>
             {tab !== "Reality View" && (
-              <div className="context-panel">
+              <div key={tab} className="context-panel">
                 {tab === "Navigation" ? (
                   <RouteMap expanded />
                 ) : (

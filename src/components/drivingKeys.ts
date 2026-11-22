@@ -26,6 +26,10 @@ export function bindDrivingKeys(target: Window, onParkedAccelerate: () => void) 
       )
     ) return;
     const key = event.key.toLowerCase();
+    if (event.repeat && drivingKeys.has(key) && !pressed.has(key) && !(key === "d" && shifting)) {
+      event.preventDefault();
+      return;
+    }
     const { controls, gear } = useCockpit.getState();
     if (key === "d" && (controls.gear === "P" || shifting)) {
       event.preventDefault();
@@ -52,9 +56,10 @@ export function bindDrivingKeys(target: Window, onParkedAccelerate: () => void) 
   };
   const clear = () => {
     shifting = false;
-    if (!pressed.size) return;
     pressed.clear();
-    useCockpit.getState().setInput({ throttle: 0, brake: 0, steering: 0 });
+    const { controls, setInput } = useCockpit.getState();
+    if (controls.throttle || controls.brake || controls.steering)
+      setInput({ throttle: 0, brake: 0, steering: 0 });
   };
   const visibility = () => {
     if (target.document.hidden) clear();

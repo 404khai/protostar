@@ -93,3 +93,15 @@ it("does not cancel demo cruise when suspending idle keyboard handlers", () => {
   cleanup();
   expect(useCockpit.getState().controls.cruise).toBe(true);
 });
+
+it("ignores stale key repeats after the guide closes until a fresh press", () => {
+  useCockpit.getState().gear("D");
+  key("keydown", "w");
+  cleanup();
+  cleanup = bindDrivingKeys(target, hint);
+  key("keydown", "w", { repeat: true });
+  expect(useCockpit.getState().controls.throttle).toBe(0);
+  key("keyup", "w");
+  key("keydown", "w");
+  expect(useCockpit.getState().controls.throttle).toBe(1);
+});

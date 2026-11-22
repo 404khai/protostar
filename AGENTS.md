@@ -373,16 +373,39 @@ This should be independent of the renderer so actual perception-model output cou
 
 Protostar should have a distinctive automotive design language.
 
-## Visual Identity
+## Visual Identity — Neo-futurist Precision Minimalism
 
-- Dark-first interface.
-- Charcoal and near-black surfaces.
-- Electric blue accent colour.
-- Clean, legible typography.
-- Minimal visual clutter.
-- Fluid animations.
-- Premium automotive styling.
-- Edge-to-edge layouts.
+The interior and digital cockpit share one architectural design language. This direction supersedes the earlier dark-first / electric-blue proposal.
+
+- Sculptural, architectural dashboard surfaces, not a conventional web dashboard.
+- Brushed aluminium, anodized metal, glass and soft-touch material cues.
+- Pearl white, cool grey, graphite and muted silver as the core palette.
+- Subtle ambient lighting integrated into the architecture.
+- Seamlessly integrated displays; screens must not look attached afterward.
+- Clean typography, restrained detail and deliberate motion.
+- Preserve the contrast between a clean digital interface and mechanical controls.
+- Balance touchscreen interaction with tactile hardware; never make the cockpit entirely touchscreen-based.
+- Give volume, temperature, driving mode, suspension and a configurable rotary controller meaningful physical-style controls: machined aluminium rotary knobs, knurled dials and mechanical switches.
+- Night is an optional environment state, not a replacement for the pearl-and-metal material direction.
+
+### Spatial Interface Vocabulary
+
+Reality View remains the working feature name. Use these names and meanings consistently when exploring future spatial interfaces; they are vocabulary, not ten separate features to implement:
+
+| Name | Meaning |
+| --- | --- |
+| Surround | Awareness of the entire driving environment |
+| Worldview | A digital representation of the world around the vehicle |
+| Perception | Focuses on what the vehicle detects |
+| Overwatch | A comprehensive view of surrounding activity |
+| Horizon | Premium, futuristic, spatial |
+| Field | The vehicle's surrounding spatial environment |
+| roadspace | A visual representation of the road and surroundings |
+| Sentinel | Awareness and monitoring |
+| Live Scene | A live reconstruction of the driving environment |
+| Spatial | A digital spatial representation |
+
+Study the images in `references/`, especially the integrated display layouts and tactile console controls. Treat them as material and interaction references, not assets to reproduce or interfaces to copy.
 
 ## Design References
 

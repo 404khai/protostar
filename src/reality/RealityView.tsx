@@ -24,7 +24,9 @@ function CameraRig() {
       cameraPosition.set(x - 0.35, 1.9, -1.3);
       lookAt.set(x + state.world.heading * 15, 1.4, -55);
     } else {
-      cameraPosition.set(x + 12, 13.5, 22);
+      // Keep the chase camera over the road, clear of roadside trees and
+      // buildings even when the vehicle is steered to the right boundary.
+      cameraPosition.set(Math.min(x + 12, 8), 13.5, 22);
       lookAt.set(x - 1, 0.5, -13);
     }
     camera.position.lerp(cameraPosition, 1 - Math.exp(-dt * 4));

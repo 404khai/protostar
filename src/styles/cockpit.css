@@ -2631,6 +2631,12 @@ small {
     scroll-behavior: auto !important;
   }
 }
+@media (max-width: 420px) {
+  .vehicle-side {
+    top: 80px;
+    width: 104px;
+  }
+}
 @media (max-width: 400px) {
   .drive-bar {
     padding: 0 11px;
@@ -2674,12 +2680,8 @@ small {
   .environment-switch {
     right: 11px;
   }
-  .vehicle-panel h2 {
-    font-size: 18px;
-  }
   .vehicle-side {
-    width: 92px;
-    top: 56px;
+    width: 96px;
   }
   .drive-actions .primary-button {
     width: 72px;
